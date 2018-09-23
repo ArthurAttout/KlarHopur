@@ -29,6 +29,7 @@ public class AuthActivity extends AppCompatActivity {
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
                         .setAvailableProviders(providers)
+                        .setTheme(R.style.LoginTheme)
                         .build(),RC_SIGN_IN);
     }
 
