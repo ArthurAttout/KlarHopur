@@ -2,6 +2,7 @@ package be.klarhopur.prom;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,15 +14,17 @@ public class PathRecord {
     private String title;
     private String imageURL;
     private double points;
-    private HashMap<String,PointOfInterest> pointsOfInterest;
+    private boolean isExpanded;
+    private ArrayList<PointOfInterest> pointsOfInterest = new ArrayList<>();
 
-    public PathRecord(LatLng origin, LatLng destination, double distanceKilometer, String title, String imageURL, double points) {
+    public PathRecord(LatLng origin, LatLng destination, double distanceKilometer, String title, String imageURL, double points, boolean isExpanded) {
         this.destination = destination;
         this.origin = origin;
         this.distanceKilometer = distanceKilometer;
         this.title = title;
         this.imageURL = imageURL;
         this.points = points;
+        this.isExpanded = isExpanded;
         this.pointsOfInterest = pointsOfInterest;
     }
 
@@ -65,7 +68,7 @@ public class PathRecord {
         this.points = points;
     }
 
-    public HashMap<String, PointOfInterest> getPointsOfInterest() {
+    public ArrayList<PointOfInterest> getPointsOfInterest() {
         return pointsOfInterest;
     }
 
@@ -77,7 +80,7 @@ public class PathRecord {
         this.title = title;
     }
 
-    public void setPointsOfInterest(HashMap<String, PointOfInterest> pointsOfInterest) {
+    public void setPointsOfInterest(ArrayList<PointOfInterest> pointsOfInterest) {
         this.pointsOfInterest = pointsOfInterest;
     }
 
@@ -98,6 +101,18 @@ public class PathRecord {
                 new LatLng(latitudeOrigin,longitudeOrigin),
                 new LatLng(latitudeDestination,longitudeDestination),
                 length,
-                title, imageURL, points);
+                title, imageURL, points, false);
+    }
+
+    public void setExpanded(boolean expanded) {
+        isExpanded = expanded;
+    }
+
+    public boolean isExpanded() {
+        return isExpanded;
+    }
+
+    public void addPOI(PointOfInterest pointOfInterest) {
+        pointsOfInterest.add(pointOfInterest);
     }
 }

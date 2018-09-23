@@ -18,8 +18,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         public ViewHolder(View itemView){
             super(itemView);
 
-            nom=(TextView)itemView.findViewById(R.id.nom);
-            adresse=(TextView)itemView.findViewById(R.id.adresse);
+            nom=(TextView)itemView.findViewById(R.id.mainTextView);
+            adresse=(TextView)itemView.findViewById(R.id.addressTextView);
         }
     }
     private Context context;
@@ -32,7 +32,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     @Override
     public PostAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View v= LayoutInflater.from(context).inflate(R.layout.po_list_elements, parent, false);
+        View v= LayoutInflater.from(context).inflate(R.layout.poi_list_elements, parent, false);
         return new ViewHolder(v);
     }
 

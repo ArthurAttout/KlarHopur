@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -88,8 +89,8 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("firebase","in");
                 if(!dataSnapshot.hasChild(user.getUid())){
                     firebaseDatabase.child("users")
-                            .child(user.getUid())
-                            .setValue(new UserFirebase(user.getDisplayName(),user.getEmail(),4, new HashMap<String, Path>()));
+                        .child(user.getUid())
+                        .setValue(new UserFirebase(user.getDisplayName(),user.getEmail(),4, new HashMap<String, Path>()));
                 }
             }
 
@@ -106,10 +107,27 @@ public class MainActivity extends AppCompatActivity {
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        HashMap<String,Map<String,Object>> data = (HashMap<String, Map<String,Object>>) dataSnapshot.getValue();
-                        ArrayList<PathRecord> records = new ArrayList<>();
+                        final HashMap<String,Map<String,Object>> data = (HashMap<String, Map<String,Object>>) dataSnapshot.getValue();
+                        final ArrayList<PathRecord> records = new ArrayList<>();
                         for (Map.Entry<String, Map<String,Object>> stringObjectEntry : data.entrySet()) {
-                            PathRecord record = PathRecord.fromDataSnapshot(stringObjectEntry.getValue());
+                            final PathRecord record = PathRecord.fromDataSnapshot(stringObjectEntry.getValue());
+                            Map<String,Boolean> poiMap = (Map<String, Boolean>) stringObjectEntry.getValue().get("poi");
+
+                            for (Map.Entry<String, Boolean> stringBooleanEntry : poiMap.entrySet()) {
+                                firebaseDatabase
+                                    .child("poi")
+                                    .child(stringBooleanEntry.getKey())
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            PointOfInterest pointOfInterest = PointOfInterest.fromDataSnapshot((Map<String, Object>) dataSnapshot.getValue());
+                                            record.addPOI(pointOfInterest);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {}
+                                    });
+                            }
                             records.add(record);
                         }
                         adapter.setHistory(records);
@@ -151,10 +169,25 @@ public class MainActivity extends AppCompatActivity {
             final PathRecord record = history.get(position);
 
             holder.mainTextView.setText(record.getTitle());
-            holder.secondTextView.setText(record.getDistanceKilometer() + " - " + record.getPoints());
+            holder.secondTextView.setText(record.getDistanceKilometer() + " km  -  " + record.getPoints() + " pts");
             Picasso.get().load(record.getImageURL()).into(holder.imageMap);
-        }
+            holder.recyclerViewPOI.setVisibility(record.isExpanded() ? View.VISIBLE : View.GONE);
+            holder.recyclerViewPOI.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+            holder.recyclerViewPOI.setAdapter(new POIAdapter(record.getPointsOfInterest()));
 
+            Picasso.get()
+                .load(record.isExpanded() ? R.drawable.baseline_expand_less_black_24 : R.drawable.baseline_expand_more_black_24)
+                .into(holder.expand);
+
+            holder.expand.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                record.setExpanded(!record.isExpanded());
+                notifyItemChanged(position);
+                Log.i("recyclerview",record.getTitle() + " expanded : " + record.isExpanded());
+                }
+            });
+        }
 
         @Override
         public int getItemCount() {
@@ -169,16 +202,19 @@ public class MainActivity extends AppCompatActivity {
         public TextView mainTextView;
         public TextView secondTextView;
         public RecyclerView recyclerViewPOI;
+        public ImageButton expand;
 
         public PathRecordViewHolder(View itemView) {
 
             super(itemView);
+            expand = itemView.findViewById(R.id.imageButtonExpand);
             imageMap = itemView.findViewById(R.id.imageViewMap);
             mainTextView = itemView.findViewById(R.id.mainTextView);
             secondTextView = itemView.findViewById(R.id.secondTextView);
             recyclerViewPOI = itemView.findViewById(R.id.recyclerViewPOI);
         }
     }
+
 
     //endregion
 }
