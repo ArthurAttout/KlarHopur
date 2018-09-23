@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "358129509725",
+    "firebase_url": "https://prom-afa93.firebaseio.com",
+    "project_id": "prom-afa93",
+    "storage_bucket": "prom-afa93.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:358129509725:android:ee4939f319fb0b02",
+        "android_client_info": {
+          "package_name": "be.klarhopur.prom"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "358129509725-r816em5r1domiokfvvffcjopvaobh4rn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCaBEUo9erfm_8Kf0weoJw08CYqenar4P4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
