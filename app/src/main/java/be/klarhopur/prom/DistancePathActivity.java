@@ -48,6 +48,7 @@ import java.util.concurrent.TimeUnit;
 public class DistancePathActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
 
     private BottomSheetBehavior mBottomSheetBehavior;
+
     private TextView textViewTime;
     private ImageView backArrow;
     private TextView textViewDistance;
@@ -77,18 +78,18 @@ public class DistancePathActivity extends AppCompatActivity implements OnMapRead
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(direction == null || pointsOfInterest == null || origin == null || destination == null) return;
+            if(direction == null || pointsOfInterest == null || origin == null || destination == null) return;
 
-                Intent intent = new Intent(getBaseContext(), UserWalkMapActivity.class);
-                Bundle b = new Bundle();
+            Intent intent = new Intent(getBaseContext(), UserWalkMapActivity.class);
+            Bundle b = new Bundle();
 
-                b.putParcelable("origin",origin);
-                b.putParcelable("destination",origin);
-                b.putParcelableArrayList("pointsOfInterest",pointsOfInterest);
-                b.putParcelable("direction",direction);
+            b.putParcelable("origin",origin);
+            b.putParcelable("destination",origin);
+            b.putParcelableArrayList("pointsOfInterest",pointsOfInterest);
+            b.putParcelable("direction",direction);
 
-                intent.putExtras(b);
-                startActivity(intent);
+            intent.putExtras(b);
+            startActivity(intent);
             }
         });
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
@@ -286,9 +287,5 @@ public class DistancePathActivity extends AppCompatActivity implements OnMapRead
         mMap = googleMap;
         lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         if(lastKnownLocation != null) onLocationChanged(lastKnownLocation);
-
-        LatLng currentLatLng = lastKnownLocation == null ?
-                new LatLng(50.224812, 5.344703) :
-                new LatLng(lastKnownLocation.getLatitude(),lastKnownLocation.getLongitude());
     }
 }
