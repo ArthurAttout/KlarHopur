@@ -1,11 +1,14 @@
 package be.klarhopur.prom;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Map;
 
-public class PointOfInterest {
+public class PointOfInterest implements Parcelable {
 
     private String address;
     private String urlImage;
@@ -124,4 +127,50 @@ public class PointOfInterest {
     }
 
 
+
+    protected PointOfInterest(Parcel in) {
+        address = in.readString();
+        urlImage = in.readString();
+        latLng = (LatLng) in.readValue(LatLng.class.getClassLoader());
+        ID = in.readString();
+        byte approvedVal = in.readByte();
+        approved = approvedVal == 0x02 ? null : approvedVal != 0x00;
+        boost = in.readDouble();
+        qrCode = in.readString();
+        name = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(address);
+        dest.writeString(urlImage);
+        dest.writeValue(latLng);
+        dest.writeString(ID);
+        if (approved == null) {
+            dest.writeByte((byte) (0x02));
+        } else {
+            dest.writeByte((byte) (approved ? 0x01 : 0x00));
+        }
+        dest.writeDouble(boost);
+        dest.writeString(qrCode);
+        dest.writeString(name);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<PointOfInterest> CREATOR = new Parcelable.Creator<PointOfInterest>() {
+        @Override
+        public PointOfInterest createFromParcel(Parcel in) {
+            return new PointOfInterest(in);
+        }
+
+        @Override
+        public PointOfInterest[] newArray(int size) {
+            return new PointOfInterest[size];
+        }
+    };
 }

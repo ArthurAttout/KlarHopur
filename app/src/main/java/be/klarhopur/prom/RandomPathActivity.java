@@ -3,6 +3,7 @@ package be.klarhopur.prom;
 import android.animation.LayoutTransition;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -37,7 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class RandomPathActivity extends AppCompatActivity implements View.OnClickListener,OnMapReadyCallback, LocationListener {
+public class RandomPathActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
 
     private BottomSheetBehavior mBottomSheetBehavior;
     private GoogleMap mMap;
@@ -49,6 +50,10 @@ public class RandomPathActivity extends AppCompatActivity implements View.OnClic
     private RecyclerView recyclerViewPOI;
     private TextView textViewViaPOI;
     private ImageView backArrow;
+    private Direction direction;
+    private ArrayList<PointOfInterest> pointsOfInterest;
+    private LatLng origin;
+    private LatLng destination;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +82,23 @@ public class RandomPathActivity extends AppCompatActivity implements View.OnClic
                 onBackPressed();
             }
         });
-        button.setOnClickListener(this);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(direction == null || pointsOfInterest == null || origin == null || destination == null) return;
+
+                Intent intent = new Intent(getBaseContext(), UserWalkMapActivity.class);
+                Bundle b = new Bundle();
+
+                b.putParcelable("origin",origin);
+                b.putParcelable("destination",origin);
+                b.putParcelableArrayList("pointsOfInterest",pointsOfInterest);
+                b.putParcelable("direction",direction);
+
+                intent.putExtras(b);
+                startActivity(intent);
+            }
+        });
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         mBottomSheetBehavior.setPeekHeight(300);  // 0 if you don't want to show the bottom sheet on the starting activity.
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -94,13 +115,6 @@ public class RandomPathActivity extends AppCompatActivity implements View.OnClic
 
     }
 
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.prom_floatingActionButton:
-                // run next activity
-                break;
-        }
-    }
 
     @Override
     public void onLocationChanged(Location location) {
@@ -165,6 +179,12 @@ public class RandomPathActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void updateViews(Direction direction, List<PointOfInterest> pointsOfInterests, LatLng origin, LatLng destination) {
+
+        this.direction = direction;
+        this.pointsOfInterest = new ArrayList<>(pointsOfInterests);
+        this.origin = origin;
+        this.destination = destination;
+
 
         mMap.addMarker(new MarkerOptions()
                 .title("Départ")
