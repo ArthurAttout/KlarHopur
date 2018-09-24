@@ -2,6 +2,7 @@ package be.klarhopur.prom;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -15,6 +16,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.akexorcist.googledirection.model.Direction;
@@ -24,6 +26,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -41,7 +44,7 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
     // INTENT TO GET BACK
     private LatLng origin;
     private LatLng destination;
-    private ArrayList<PointOfInterest> path;
+    private ArrayList<PointOfInterest> pointsOfInterests;
     private Direction direction;
 
     @Override
@@ -52,7 +55,7 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
 
         origin = (LatLng) getIntent().getParcelableExtra("origin");
         destination = (LatLng) getIntent().getParcelableExtra("destination");
-        path = getIntent().getParcelableArrayListExtra("pointsOfInterest");
+        pointsOfInterests = getIntent().getParcelableArrayListExtra("pointsOfInterest");
         direction = (Direction) getIntent().getParcelableExtra("direction");
 
         bottomSheetView = findViewById(R.id.bottomSheetLayout);
@@ -97,11 +100,25 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationClickListener(this);
         // Add a marker in Sydney and move the camera
-        LatLng marche = new LatLng(50.248100, 5.339977);
-
-        myMarker = googleMap.addMarker(new MarkerOptions()
-                .position(marche));
+        //LatLng marche = new LatLng(50.248100, 5.339977);
+        //myMarker = googleMap.addMarker(new MarkerOptions().position(marche));
         //googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+        mMap.addMarker(new MarkerOptions()
+                .title("Départ")
+                .position(origin));
+
+        for (PointOfInterest pointOfInterest : pointsOfInterests) {
+            mMap.addMarker(new MarkerOptions()
+                    .title(pointOfInterest.getName())
+                    .position(pointOfInterest.getLatLng()));
+        }
+
+        mMap.addMarker(new MarkerOptions()
+                .title("Arrivée")
+                .position(destination)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+
 
         mMap.setOnMarkerClickListener(this);
     }
@@ -109,8 +126,12 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
     @Override
     public boolean onMarkerClick(final Marker marker) {
 
-        if (marker.equals(myMarker))
-        {
+        if (marker.getTitle().equals("Arrivée")) {
+            // TODO launch final activity
+            //Intent intent = new Intent(this, DisplayMessageActivity.class);
+            //startActivity(intent);
+        } else if (!marker.getTitle().equals("Arrivée") || !marker.getTitle().equals("Départ")) {
+
             bottomSheetView.setVisibility(View.VISIBLE);
             View v = findViewById(R.id.cameraActionButton);
             v.setVisibility(View.INVISIBLE);
@@ -120,6 +141,17 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
             ConstraintLayout.LayoutParams newLayoutParams = (ConstraintLayout.LayoutParams) v2.getLayoutParams();
             newLayoutParams.topMargin = 71;
             v2.setLayoutParams(newLayoutParams);
+
+            TextView tv1 = (TextView)findViewById(R.id.poiName);
+            tv1.setText(marker.getTitle());
+
+            for (PointOfInterest pointOfInterest : pointsOfInterests) {
+                if(pointOfInterest.getName().equals(marker.getTitle())){
+                    TextView tv2 = (TextView)findViewById(R.id.poiAddress);
+                    tv2.setText(marker.getTitle());
+                }
+            }
+
         }
         return false;
     }

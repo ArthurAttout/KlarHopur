@@ -197,6 +197,7 @@
             app:layout_constraintStart_toStartOf="parent">
 
             <android.support.constraint.ConstraintLayout
+                android:id="@+id/bottomSheetConstraintLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -212,7 +213,7 @@
                     app:srcCompat="@drawable/aleatoire_48" />
 
                 <TextView
-                    android:id="@+id/bottom_time_text_view"
+                    android:id="@+id/poiName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -224,7 +225,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/bottom_via_poi_text_view"
+                    android:id="@+id/poiAddress"
                     android:layout_width="180dp"
                     android:layout_height="0dp"
                     android:layout_marginStart="16dp"
@@ -232,7 +233,7 @@
                     android:textColor="@color/common_google_signin_btn_text_light_default"
                     android:textSize="16sp"
                     app:layout_constraintStart_toEndOf="@+id/poiImage"
-                    app:layout_constraintTop_toBottomOf="@+id/bottom_time_text_view" />
+                    app:layout_constraintTop_toBottomOf="@+id/poiName" />
 
             </android.support.constraint.ConstraintLayout>
 
