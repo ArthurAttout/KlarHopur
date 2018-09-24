@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             app:layout_constraintStart_toEndOf="@+id/back_arrow"
-            app:srcCompat="@drawable/distance_arrow_18istance_arrow_18"
+            app:srcCompat="@drawable/distance_arrow_18"
             tools:layout_editor_absoluteY="17dp" />
 
         <SearchView
