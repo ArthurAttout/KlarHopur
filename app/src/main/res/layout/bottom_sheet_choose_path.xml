@@ -7,27 +7,30 @@
     android:padding="4dp">
 
 
-    <ImageButton
+    <Button
         android:id="@+id/imageButtonRandom"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        app:srcCompat="@drawable/ico_path_random" />
+        android:drawableTop="@drawable/aleatoire_48"
+        android:text="Aléatoire" />
 
-    <ImageButton
+    <Button
         android:id="@+id/imageButtonDistance"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Distance fixe"
         android:layout_weight="1"
-        app:srcCompat="@drawable/ico_path_distance" />
+        android:drawableTop="@drawable/distance_48" />
 
-    <ImageButton
+    <Button
         android:id="@+id/imageButtonAtoB"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="De A vers B"
         android:layout_weight="1"
-        app:srcCompat="@drawable/ico_path_a_to_b" />
+        android:drawableTop="@drawable/ab_48" />
 </LinearLayout>

@@ -1,23 +1,16 @@
 package be.klarhopur.prom;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.util.Log;
 
-import com.akexorcist.googledirection.DirectionCallback;
-import com.akexorcist.googledirection.GoogleDirection;
-import com.akexorcist.googledirection.constant.AvoidType;
 import com.akexorcist.googledirection.model.Direction;
-import com.akexorcist.googledirection.model.RoutePolyline;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -25,10 +18,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MapsActivityTest extends FragmentActivity implements OnMapReadyCallback, LocationListener {
@@ -66,25 +57,39 @@ public class MapsActivityTest extends FragmentActivity implements OnMapReadyCall
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        Utils.getRouteFromAtoB(
-            new LatLng(50.23413,5.344769),
-            new LatLng(50.246785,5.336868),
+        Utils.getRouteForDistance(
+            new LatLng(50.224812, 5.344703),
+            4000,
             new Utils.PathComputedCallback() {
-                @Override
-                public void onPathComputed(RoutePolyline polyline) {
+                    @Override
+                    public void onPathComputed(Direction direction, List<PointOfInterest> pointsOfInterests, LatLng origin, LatLng destination) {
                     PolylineOptions options = new PolylineOptions();
-                    options.addAll(Utils.decodePoly(polyline.getRawPointList()));
+                    options.addAll(Utils.decodePoly(direction.getRouteList().get(0).getOverviewPolyline().getRawPointList()));
                     mMap.addPolyline(options);
+
+                    for (PointOfInterest pointOfInterest : pointsOfInterests) {
+                        mMap.addMarker(new MarkerOptions()
+                            .title((pointsOfInterests.indexOf(pointOfInterest)+1) + " - " + pointOfInterest.getName())
+                            .position(pointOfInterest.getLatLng()));
+                    }
+
+                    mMap.addMarker(new MarkerOptions()
+                        .title("Départ")
+                        .position(origin));
                 }
             }
         );
+
+        @SuppressLint("MissingPermission")
+        Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if(lastKnownLocation != null) onLocationChanged(lastKnownLocation);
     }
 
 
     @Override
     public void onLocationChanged(Location location) {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 10);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 14);
         mMap.animateCamera(cameraUpdate);
         locationManager.removeUpdates(this);
     }

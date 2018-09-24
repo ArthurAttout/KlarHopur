@@ -11,7 +11,6 @@
     <style name="SearchBar" parent="Base.Widget.AppCompat.SearchView">
         <item name="android:background">@color/searchBarMap</item>
         <item name="android:textColorHint">@android:color/white</item>
-
     </style>
 
     <style name="LoginTheme" parent="FirebaseUI">
