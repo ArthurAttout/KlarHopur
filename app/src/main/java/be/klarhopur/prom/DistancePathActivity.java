@@ -21,6 +21,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -171,7 +172,7 @@ public class DistancePathActivity extends AppCompatActivity implements OnMapRead
                 LatLng currentLatLng = lastKnownLocation == null ?
                     new LatLng(50.224812, 5.344703) :
                     new LatLng(lastKnownLocation.getLatitude(),lastKnownLocation.getLongitude());
-                Utils.getRouteForDistance(currentLatLng,value, new Utils.PathComputedCallback() {
+                Utils.getRouteForDistance(currentLatLng,value*1000, new Utils.PathComputedCallback() {
                     @Override
                     public void onPathComputed(Direction direction, List<PointOfInterest> pointsOfInterests, LatLng origin, LatLng destination) {
                         PolylineOptions options = new PolylineOptions();
@@ -180,6 +181,12 @@ public class DistancePathActivity extends AppCompatActivity implements OnMapRead
                         updateViews(direction,pointsOfInterests,origin,destination);
                     }
                 });
+
+                InputMethodManager inputManager =
+                        (InputMethodManager) DistancePathActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputManager.hideSoftInputFromWindow(
+                        DistancePathActivity.this.getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
 
                 return true;
             }
