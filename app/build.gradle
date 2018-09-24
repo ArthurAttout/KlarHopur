@@ -37,6 +37,7 @@ dependencies {
 
     implementation 'com.facebook.android:facebook-android-sdk:4.33.0'
     implementation 'com.twitter.sdk.android:twitter-core:3.1.1'
+    implementation 'com.akexorcist:googledirectionlibrary:1.1.1'
     implementation 'com.google.android.gms:play-services-maps:15.0.1'
 }
 

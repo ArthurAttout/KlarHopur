@@ -233,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
                                 .addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        PointOfInterest pointOfInterest = PointOfInterest.fromDataSnapshot((Map<String, Object>) dataSnapshot.getValue());
+                                        PointOfInterest pointOfInterest = PointOfInterest.fromDataSnapshot(dataSnapshot.getKey(), (Map<String, Object>) dataSnapshot.getValue());
                                         record.addPOI(pointOfInterest);
                                     }
 
