@@ -3,6 +3,10 @@ package be.klarhopur.prom;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialog;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -39,17 +43,53 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private HistoryAdapter adapter;
+    private FloatingActionButton floatingActionButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        floatingActionButton = findViewById(R.id.floatingActionButton);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDialog();
+            }
+        });
         recyclerView = findViewById(R.id.recyclerViewHistory);
         initialSetup();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new HistoryAdapter();
         recyclerView.setAdapter(adapter);
+    }
+
+
+    private void openDialog() {
+        View view = getLayoutInflater().inflate(R.layout.dialog_bottom_sheet, null);
+        view.findViewById(R.id.imageButtonAtoB).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        view.findViewById(R.id.imageButtonDistance).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        view.findViewById(R.id.imageButtonRandom).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        BottomSheetDialog dialog = new BottomSheetDialog(this);
+        dialog.setContentView(view);
+        dialog.show();
     }
 
     @Override
@@ -64,13 +104,13 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_sign_out:
                 AuthUI.getInstance()
-                        .signOut(this)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            public void onComplete(@NonNull Task<Void> task) {
-                                Intent intent = new Intent(getBaseContext(), AuthActivity.class);
-                                startActivity(intent);
-                            }
-                        });
+                    .signOut(this)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        public void onComplete(@NonNull Task<Void> task) {
+                            Intent intent = new Intent(getBaseContext(), AuthActivity.class);
+                            startActivity(intent);
+                        }
+                    });
 
                 default:
                     return super.onOptionsItemSelected(item);
@@ -108,6 +148,8 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         final HashMap<String,Map<String,Object>> data = (HashMap<String, Map<String,Object>>) dataSnapshot.getValue();
+                        if(data == null)return;
+
                         final ArrayList<PathRecord> records = new ArrayList<>();
                         for (Map.Entry<String, Map<String,Object>> stringObjectEntry : data.entrySet()) {
                             final PathRecord record = PathRecord.fromDataSnapshot(stringObjectEntry.getValue());
@@ -138,10 +180,12 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    public class HistoryAdapter extends RecyclerView.Adapter<PathRecordViewHolder> {
+    public class HistoryAdapter extends RecyclerView.Adapter<ParentViewHolder> {
 
+        private static final int VIEW_TYPE_NO_ITEMS = 0x98a;
         public ArrayList<PathRecord> history = new ArrayList<>();
-        private PathRecordViewHolder viewHolder;
+        private ParentViewHolder viewHolder;
+        private static final int VIEW_TYPE_ITEM = 0x987d;
 
         public HistoryAdapter(ArrayList<PathRecord> arrayList) {
             history = arrayList;
@@ -152,7 +196,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public PathRecordViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public ParentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            if(viewType == VIEW_TYPE_NO_ITEMS){ //Placeholder
+                ConstraintLayout v = (ConstraintLayout) LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.placeholder_history_path, parent, false);
+                viewHolder = new PlaceHolderViewHolder(v);
+                return viewHolder;
+            }
             CardView v = (CardView) LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.item_history_record_layout, parent, false);
             viewHolder = new PathRecordViewHolder(v);
@@ -165,38 +215,46 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(final PathRecordViewHolder holder, final int position) {
-            final PathRecord record = history.get(position);
+        public void onBindViewHolder(final ParentViewHolder holder, final int position) {
+            if(viewHolder instanceof PathRecordViewHolder){
+                PathRecordViewHolder viewHolderTemp = (PathRecordViewHolder) viewHolder;
+                final PathRecord record = history.get(position);
 
-            holder.mainTextView.setText(record.getTitle());
-            holder.secondTextView.setText(record.getDistanceKilometer() + " km  -  " + record.getPoints() + " pts");
-            Picasso.get().load(record.getImageURL()).into(holder.imageMap);
-            holder.recyclerViewPOI.setVisibility(record.isExpanded() ? View.VISIBLE : View.GONE);
-            holder.recyclerViewPOI.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-            holder.recyclerViewPOI.setAdapter(new POIAdapter(record.getPointsOfInterest()));
+                viewHolderTemp.mainTextView.setText(record.getTitle());
+                viewHolderTemp.secondTextView.setText(record.getDistanceKilometer() + " km  -  " + record.getPoints() + " pts");
+                Picasso.get().load(record.getImageURL()).into(viewHolderTemp.imageMap);
+                viewHolderTemp.recyclerViewPOI.setVisibility(record.isExpanded() ? View.VISIBLE : View.GONE);
+                viewHolderTemp.recyclerViewPOI.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                viewHolderTemp.recyclerViewPOI.setAdapter(new POIAdapter(record.getPointsOfInterest()));
 
-            Picasso.get()
-                .load(record.isExpanded() ? R.drawable.baseline_expand_less_black_24 : R.drawable.baseline_expand_more_black_24)
-                .into(holder.expand);
+                Picasso.get()
+                        .load(record.isExpanded() ? R.drawable.baseline_expand_less_black_24 : R.drawable.baseline_expand_more_black_24)
+                        .into(viewHolderTemp.expand);
 
-            holder.expand.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                record.setExpanded(!record.isExpanded());
-                notifyItemChanged(position);
-                Log.i("recyclerview",record.getTitle() + " expanded : " + record.isExpanded());
-                }
-            });
+                viewHolderTemp.expand.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        record.setExpanded(!record.isExpanded());
+                        notifyItemChanged(position);
+                        Log.i("recyclerview",record.getTitle() + " expanded : " + record.isExpanded());
+                    }
+                });
+            }
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            if(history.size() == 0) return VIEW_TYPE_NO_ITEMS;
+            return VIEW_TYPE_ITEM;
         }
 
         @Override
         public int getItemCount() {
-            return history.size();
+            return history.size() == 0 ? 1 : history.size();
         }
-
     }
 
-    private class PathRecordViewHolder extends RecyclerView.ViewHolder{
+    private class PathRecordViewHolder extends ParentViewHolder{
 
         public ImageView imageMap;
         public TextView mainTextView;
@@ -212,6 +270,19 @@ public class MainActivity extends AppCompatActivity {
             mainTextView = itemView.findViewById(R.id.mainTextView);
             secondTextView = itemView.findViewById(R.id.secondTextView);
             recyclerViewPOI = itemView.findViewById(R.id.recyclerViewPOI);
+        }
+    }
+
+    private class PlaceHolderViewHolder extends ParentViewHolder{
+
+        public PlaceHolderViewHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
+    private class ParentViewHolder extends RecyclerView.ViewHolder{
+        public ParentViewHolder(View itemView) {
+            super(itemView);
         }
     }
 

@@ -37,13 +37,12 @@ class POIAdapter extends RecyclerView.Adapter<POIAdapter.POIViewHolder> {
     public void onBindViewHolder(@NonNull POIViewHolder holder, int position) {
         final PointOfInterest poi = pointOfInterest.get(position);
 
-        holder.mainTextView.setText(poi.getAddress());
-        holder.textViewAddress.setText(poi.getName());
+        holder.mainTextView.setText(poi.getName());
+        holder.textViewAddress.setText(poi.getAddress());
     }
 
     @Override
     public int getItemCount() {
-        Log.i("size",String.valueOf(pointOfInterest.size()));
         return pointOfInterest.size();
     }
 
