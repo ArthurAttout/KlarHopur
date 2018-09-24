@@ -54,7 +54,10 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
         setTheme(R.style.NoActionBar);
         setContentView(R.layout.activity_user_walk_map);
 
-        //path =  getIntent().getParcelableArrayListExtra("pointsOfInterest");
+        origin =  getIntent().getParcelableExtra("origin");
+        destination =  getIntent().getParcelableExtra("destination");
+        pointsOfInterests =  getIntent().getParcelableArrayListExtra("pointsOfInterest");
+        direction =  getIntent().getStringExtra("polyline");
 
 
         bottomSheetView = findViewById(R.id.bottomSheetLayout);
