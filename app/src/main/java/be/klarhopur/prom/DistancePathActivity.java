@@ -172,7 +172,7 @@ public class DistancePathActivity extends AppCompatActivity implements OnMapRead
                 LatLng currentLatLng = lastKnownLocation == null ?
                     new LatLng(50.224812, 5.344703) :
                     new LatLng(lastKnownLocation.getLatitude(),lastKnownLocation.getLongitude());
-                Utils.getRouteForDistance(currentLatLng,value, new Utils.PathComputedCallback() {
+                Utils.getRouteForDistance(currentLatLng,value*1000, new Utils.PathComputedCallback() {
                     @Override
                     public void onPathComputed(Direction direction, List<PointOfInterest> pointsOfInterests, LatLng origin, LatLng destination) {
                         PolylineOptions options = new PolylineOptions();
