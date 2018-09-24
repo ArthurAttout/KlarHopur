@@ -91,7 +91,7 @@ public class RandomPathActivity extends AppCompatActivity implements OnMapReadyC
                 Bundle b = new Bundle();
 
                 b.putParcelable("origin",origin);
-                b.putParcelable("destination",origin);
+                b.putParcelable("destination",destination);
                 b.putParcelableArrayList("pointsOfInterest",pointsOfInterest);
                 b.putParcelable("direction",direction);
 
