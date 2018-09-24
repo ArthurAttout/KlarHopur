@@ -76,24 +76,17 @@ public class MainActivity extends AppCompatActivity {
     private void init(){
 
     }
+
     public boolean isServicesOK(){
         Log.d(TAG,"isServicesOk: checking google services version");
         int available= GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(MainActivity.this);
 
         if(available== ConnectionResult.SUCCESS){
-            //everything is fine and the user can make map requests
-            Log.d(TAG,"isServicesOk: google services is working");
             return true;
         }
         else if(GoogleApiAvailability.getInstance().isUserResolvableError(available)){
-
-            //an error occured but we can resolve it
-            Log.d(TAG,"isServicesOk: an error occured but we can fix it");
             Dialog dialog= GoogleApiAvailability.getInstance().getErrorDialog(MainActivity.this,available,ERROR_DIALOG_REQUEST);
             dialog.show();
-        }
-        else {
-            Toast.makeText(this, "you can't make map", Toast.LENGTH_SHORT).show();
         }
 
         return false;

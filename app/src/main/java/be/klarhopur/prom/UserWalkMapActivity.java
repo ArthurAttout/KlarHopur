@@ -10,15 +10,12 @@ import android.location.LocationManager;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,6 +53,7 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
     private String direction;
     private ArrayList<String> visitedPois = new ArrayList<String>();
 
+    private double length;
     private FloatingActionButton fab;
 
     @Override
@@ -65,11 +63,10 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
         setContentView(R.layout.activity_user_walk_map);
 
         origin =  getIntent().getParcelableExtra("origin");
-        destination =  getIntent().getParcelableExtra("destination");
         pointsOfInterests =  getIntent().getParcelableArrayListExtra("pointsOfInterest");
+
         direction =  getIntent().getStringExtra("polyline");
         fab = findViewById(R.id.cameraActionButton);
-
 
         bottomSheetView = findViewById(R.id.bottomSheetLayout);
         bottomSheetView.setVisibility(View.INVISIBLE);
@@ -158,7 +155,12 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
         if (marker.getTitle().equals("Arrivée")) {
             // TODO launch final activity
             Intent intent = new Intent(this, FinishWalkActivity.class);
+
+            intent.putExtra("destination",destination);
+            intent.putExtra("length",length);
+            intent.putExtra("origin",origin);
             intent.putExtra(VISITED_POIS, pointsOfInterests);
+
             startActivity(intent);
         } else {
 
