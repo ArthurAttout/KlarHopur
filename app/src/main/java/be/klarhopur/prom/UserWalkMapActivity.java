@@ -7,20 +7,17 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.akexorcist.googledirection.model.Direction;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -54,7 +51,8 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
     private ArrayList<String> visitedPois = new ArrayList<String>();
 
     private double length;
-    private FloatingActionButton fab;
+    private FloatingActionButton selfieActionBtn;
+    private FloatingActionButton qrCodeActionBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,9 +62,10 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
 
         origin =  getIntent().getParcelableExtra("origin");
         pointsOfInterests =  getIntent().getParcelableArrayListExtra("pointsOfInterest");
-
+        destination = getIntent().getParcelableExtra("destination");
         direction =  getIntent().getStringExtra("polyline");
-        fab = findViewById(R.id.cameraActionButton);
+        selfieActionBtn = findViewById(R.id.cameraActionButton);
+        qrCodeActionBtn = findViewById(R.id.qrCodeActionBtn);
 
         bottomSheetView = findViewById(R.id.bottomSheetLayout);
         bottomSheetView.setVisibility(View.INVISIBLE);
@@ -84,7 +83,16 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
         }
 
-        fab.setOnClickListener(new View.OnClickListener() {
+        selfieActionBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                Intent myIntent = new Intent(UserWalkMapActivity.this, CameraActivity.class);
+                startActivityForResult(myIntent, 0);
+            }
+        });
+
+        qrCodeActionBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG).setAction("Action", null).show();
