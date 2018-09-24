@@ -93,24 +93,32 @@ public class AtoBPathActivity extends AppCompatActivity implements OnMapReadyCal
         editTextEndPoint = findViewById(R.id.end_search_bar);
         editTextEndPoint.setKeyListener(null);
 
+        backArrow = findViewById(R.id.back_arrow);
+        backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
         geocoder = new Geocoder(this);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(direction == null || pointsOfInterest == null || origin == null || destination == null) return;
+            if(direction == null || pointsOfInterest == null || origin == null || destination == null) return;
 
-                Intent intent = new Intent(getBaseContext(), UserWalkMapActivity.class);
-                Bundle b = new Bundle();
+            Intent intent = new Intent(getBaseContext(), UserWalkMapActivity.class);
+            Bundle b = new Bundle();
 
-                b.putParcelable("origin",origin);
-                b.putParcelable("destination",destination);
-                b.putString("polyline",direction.getRouteList().get(0).getOverviewPolyline().getRawPointList());
-                b.putParcelableArrayList("pointsOfInterest",pointsOfInterest);
-                b.putParcelable("direction",direction);
+            b.putParcelable("origin",origin);
+            b.putParcelable("destination",destination);
+            b.putString("polyline",direction.getRouteList().get(0).getOverviewPolyline().getRawPointList());
+            b.putParcelableArrayList("pointsOfInterest",pointsOfInterest);
+            b.putParcelable("direction",direction);
 
-                intent.putExtras(b);
-                startActivity(intent);
+            intent.putExtras(b);
+            startActivity(intent);
             }
         });
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
