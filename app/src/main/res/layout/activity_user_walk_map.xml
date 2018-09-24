@@ -13,7 +13,8 @@
         android:layout_height="match_parent"
         tools:context="be.klarhopur.prom.UserWalkMapActivity"
         tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="16dp"></fragment>
+        tools:layout_editor_absoluteY="16dp"
+        tools:ignore="MissingConstraints"></fragment>
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/multiplierConstraint"
@@ -71,7 +72,6 @@
         android:id="@+id/navBarConstraintLayout"
         android:layout_width="match_parent"
         android:layout_height="62dp"
-        android:layout_marginTop="24dp"
         android:background="?attr/colorPrimary"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -156,6 +156,7 @@
 
     <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/bottomSheetLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:fitsSystemWindows="true"
@@ -208,7 +209,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="16dp"
                     android:text="Chez Jacquy"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -220,14 +221,13 @@
                     android:layout_width="180dp"
                     android:layout_height="0dp"
                     android:layout_marginStart="16dp"
-                    android:text="5, Rue du magasin - 1690  Marche-en-famenne"
+                    android:text="5, Rue du magasin - 1690 Marche-en-famenne"
                     android:textColor="@color/common_google_signin_btn_text_light_default"
                     android:textSize="16sp"
                     app:layout_constraintStart_toEndOf="@+id/poiImage"
                     app:layout_constraintTop_toBottomOf="@+id/bottom_time_text_view" />
 
             </android.support.constraint.ConstraintLayout>
-
 
         </android.support.v4.widget.NestedScrollView>
     </android.support.design.widget.CoordinatorLayout>
