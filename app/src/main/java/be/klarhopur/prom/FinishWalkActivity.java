@@ -1,5 +1,6 @@
 package be.klarhopur.prom;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
@@ -72,6 +73,14 @@ public class FinishWalkActivity extends AppCompatActivity {
                     .child(UUID.randomUUID().toString())
                     .setValue(map);
         }
+
+        findViewById(R.id.floatingActionButtonHome).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                startActivity(intent);
+            }
+        });
 
         RecyclerView recyclerViewPOI = findViewById(R.id.visitedPoiRecycler);
         recyclerViewPOI.setLayoutManager(new LinearLayoutManager(this));

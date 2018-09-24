@@ -73,6 +73,7 @@ public class AtoBPathActivity extends AppCompatActivity implements OnMapReadyCal
     private String endID;
 
     private Geocoder geocoder;
+    private double totalDistanceMeters;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +117,7 @@ public class AtoBPathActivity extends AppCompatActivity implements OnMapReadyCal
             b.putString("polyline",direction.getRouteList().get(0).getOverviewPolyline().getRawPointList());
             b.putParcelableArrayList("pointsOfInterest",pointsOfInterest);
             b.putParcelable("direction",direction);
+            b.putDouble("length",totalDistanceMeters);
 
             intent.putExtras(b);
             startActivity(intent);
@@ -206,7 +208,7 @@ public class AtoBPathActivity extends AppCompatActivity implements OnMapReadyCal
 
 
         int totalSeconds = 0;
-        double totalDistanceMeters = 0;
+        totalDistanceMeters = 0;
 
         for (Leg leg : direction.getRouteList().get(0).getLegList()) {
             totalSeconds += Integer.parseInt(leg.getDuration().getValue());

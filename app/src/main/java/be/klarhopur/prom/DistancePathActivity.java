@@ -63,6 +63,7 @@ public class DistancePathActivity extends AppCompatActivity implements OnMapRead
     private ArrayList<PointOfInterest> pointsOfInterest;
     private LatLng origin;
     private LatLng destination;
+    private double totalDistanceMeters;
 
 
     @Override
@@ -88,6 +89,7 @@ public class DistancePathActivity extends AppCompatActivity implements OnMapRead
             b.putString("polyline",direction.getRouteList().get(0).getOverviewPolyline().getRawPointList());
             b.putParcelableArrayList("pointsOfInterest",pointsOfInterest);
             b.putParcelable("direction",direction);
+            b.putDouble("length",totalDistanceMeters);
 
             intent.putExtras(b);
             startActivity(intent);
@@ -219,7 +221,7 @@ public class DistancePathActivity extends AppCompatActivity implements OnMapRead
 
 
         int totalSeconds = 0;
-        double totalDistanceMeters = 0;
+        totalDistanceMeters = 0;
 
         for (Leg leg : direction.getRouteList().get(0).getLegList()) {
             totalSeconds += Integer.parseInt(leg.getDuration().getValue());
