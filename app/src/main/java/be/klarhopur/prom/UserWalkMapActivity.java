@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
@@ -49,10 +50,10 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
         setTheme(R.style.NoActionBar);
         setContentView(R.layout.activity_user_walk_map);
 
-        path = (LatLng) getIntent().getParcelableArrayListExtra("origin");
-        path = (LatLng) getIntent().getParcelableArrayListExtra("destination");
-        path = (ArrayList<PointOfInterest>) getIntent().getParcelableArrayListExtra("pointsOfInterest");
-        path = (Direction) getIntent().getParcelableArrayListExtra("direction");
+        origin = (LatLng) getIntent().getParcelableExtra("origin");
+        destination = (LatLng) getIntent().getParcelableExtra("destination");
+        path = getIntent().getParcelableArrayListExtra("pointsOfInterest");
+        direction = (Direction) getIntent().getParcelableExtra("direction");
 
         bottomSheetView = findViewById(R.id.bottomSheetLayout);
         bottomSheetView.setVisibility(View.INVISIBLE);
