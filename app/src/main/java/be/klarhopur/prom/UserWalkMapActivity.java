@@ -52,6 +52,7 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
     private ArrayList<PointOfInterest> pointsOfInterests;
     private String direction;
     private ArrayList<String> visitedPois = new ArrayList<String>();
+    private double length;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,11 +60,12 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
         setTheme(R.style.NoActionBar);
         setContentView(R.layout.activity_user_walk_map);
 
-        origin =  getIntent().getParcelableExtra("origin");
         destination =  getIntent().getParcelableExtra("destination");
+        length = getIntent().getDoubleExtra("length",1);
+        origin =  getIntent().getParcelableExtra("origin");
         pointsOfInterests =  getIntent().getParcelableArrayListExtra("pointsOfInterest");
-        direction =  getIntent().getStringExtra("polyline");
 
+        direction =  getIntent().getStringExtra("polyline");
 
         bottomSheetView = findViewById(R.id.bottomSheetLayout);
         bottomSheetView.setVisibility(View.INVISIBLE);
@@ -142,7 +144,12 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
         if (marker.getTitle().equals("Arrivée")) {
             // TODO launch final activity
             Intent intent = new Intent(this, FinishWalkActivity.class);
+
+            intent.putExtra("destination",destination);
+            intent.putExtra("length",length);
+            intent.putExtra("origin",origin);
             intent.putExtra(VISITED_POIS, pointsOfInterests);
+
             startActivity(intent);
         } else {
 

@@ -42,7 +42,7 @@
             app:srcCompat="@drawable/baseline_directions_walk_white_48" />
 
         <TextView
-            android:id="@+id/km"
+            android:id="@+id/textViewDistance"
             android:layout_width="139dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="80dp"
@@ -66,7 +66,7 @@
             app:srcCompat="@drawable/point_48" />
 
         <TextView
-            android:id="@+id/points"
+            android:id="@+id/textViewPoints"
             android:layout_width="197dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="32dp"
@@ -75,7 +75,7 @@
             android:textColor="#ffffff"
             android:textSize="35dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/km" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewDistance" />
 
     </android.support.constraint.ConstraintLayout>
 
