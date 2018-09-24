@@ -165,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
                 if(!dataSnapshot.hasChild(user.getUid())){
                     firebaseDatabase.child("users")
                         .child(user.getUid())
-                        .setValue(new UserFirebase(user.getDisplayName(),user.getEmail(),4, new HashMap<String, Path>()));
+                        .setValue(new UserFirebase(user.getEmail(),user.getDisplayName(),4, new HashMap<String, Path>()));
                 }
             }
 
