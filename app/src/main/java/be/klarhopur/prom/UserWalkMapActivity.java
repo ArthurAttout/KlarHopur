@@ -16,6 +16,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import com.akexorcist.googledirection.model.Direction;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -26,6 +27,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+
 public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener, GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener, GoogleMap.OnMarkerClickListener {
 
@@ -34,11 +37,22 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
     private Marker myMarker;
     private View bottomSheetView;
 
+    // INTENT TO GET BACK
+    private LatLng origin;
+    private LatLng destination;
+    private ArrayList<PointOfInterest> path;
+    private Direction direction;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTheme(R.style.NoActionBar);
         setContentView(R.layout.activity_user_walk_map);
+
+        path = (LatLng) getIntent().getParcelableArrayListExtra("origin");
+        path = (LatLng) getIntent().getParcelableArrayListExtra("destination");
+        path = (ArrayList<PointOfInterest>) getIntent().getParcelableArrayListExtra("pointsOfInterest");
+        path = (Direction) getIntent().getParcelableArrayListExtra("direction");
 
         bottomSheetView = findViewById(R.id.bottomSheetLayout);
         bottomSheetView.setVisibility(View.INVISIBLE);
