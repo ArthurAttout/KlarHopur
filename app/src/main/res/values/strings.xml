@@ -10,4 +10,7 @@
     <string name="title_activity_maps_test">Map</string>
     <string name="title_activity_user_walk_map">Map</string>
     <string name="title_activity_finish_walk">FinishWalkActivity</string>
+    <string name="request_permission">This app requires camera permission.</string>
+    <string name="camera_error">This device does not support Camera2 API</string>
+    <string name="camera_preview_creation_failed">Creation of camera preview failed!</string>
 </resources>

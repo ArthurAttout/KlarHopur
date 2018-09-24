@@ -10,12 +10,15 @@ import android.location.LocationManager;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +56,8 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
     private String direction;
     private ArrayList<String> visitedPois = new ArrayList<String>();
 
+    private FloatingActionButton fab;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +68,7 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
         destination =  getIntent().getParcelableExtra("destination");
         pointsOfInterests =  getIntent().getParcelableArrayListExtra("pointsOfInterest");
         direction =  getIntent().getStringExtra("polyline");
+        fab = findViewById(R.id.cameraActionButton);
 
 
         bottomSheetView = findViewById(R.id.bottomSheetLayout);
@@ -80,6 +86,16 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
         }
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                Intent myIntent = new Intent(UserWalkMapActivity.this, CameraActivity.class);
+                startActivityForResult(myIntent, 0);
+            }
+        });
+
     }
 
     /**
