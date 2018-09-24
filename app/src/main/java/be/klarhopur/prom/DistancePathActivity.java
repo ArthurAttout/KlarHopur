@@ -21,6 +21,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -180,6 +181,12 @@ public class DistancePathActivity extends AppCompatActivity implements OnMapRead
                         updateViews(direction,pointsOfInterests,origin,destination);
                     }
                 });
+
+                InputMethodManager inputManager =
+                        (InputMethodManager) DistancePathActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputManager.hideSoftInputFromWindow(
+                        DistancePathActivity.this.getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
 
                 return true;
             }

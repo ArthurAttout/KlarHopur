@@ -186,7 +186,7 @@
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recyclerViewPOI"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
