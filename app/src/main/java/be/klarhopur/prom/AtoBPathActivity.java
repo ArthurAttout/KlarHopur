@@ -85,6 +85,7 @@ public class AtoBPathActivity extends AppCompatActivity implements OnMapReadyCal
         FloatingActionButton button = findViewById( R.id.prom_floatingActionButton );
 
         imageButtonInfo = findViewById(R.id.imageButtonInfo);
+        recyclerViewPOI = findViewById(R.id.recyclerViewPOI);
 
         editTextStartPoint = findViewById(R.id.start_search_bar);
         editTextStartPoint.setKeyListener(null);
