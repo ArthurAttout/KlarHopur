@@ -119,7 +119,7 @@
         android:layout_weight="1"
         android:backgroundTint="@color/tw__solid_white"
         android:drawableLeft="@drawable/walk_24"
-        android:text="2 min"
+        android:text="a pied"
         android:textColor="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -127,18 +127,18 @@
 
     <Button
         android:id="@+id/bycicle_distance_time_button"
+        android:enabled="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="@color/fui_transparent"
+        android:backgroundTint="@color/browser_actions_bg_grey"
+        android:drawableTint="@android:color/black"
         android:drawableLeft="@drawable/baseline_directions_bike_white_18"
-        android:text="2 min"
-        android:textColor="@color/tw__solid_white"
+        android:text="(bientôt ...)"
+        android:textColor="@android:color/black"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/walk_distance_time_button"
-        app:layout_constraintTop_toBottomOf="@+id/end_search_bar" />
+        app:layout_constraintStart_toEndOf="@+id/walk_distance_time_button" />
 
     <ImageButton
         android:id="@+id/imageButtonInfo"
