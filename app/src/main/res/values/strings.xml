@@ -6,4 +6,5 @@
     <string name="short_path_label">Court</string>
     <string name="medium_path_label">Moyen</string>
     <string name="long_path_label">Long</string>
+    <string name="google_maps_API_key">AIzaSyBFq2SQVMPitUVloTVGhpF2OcMYZMtzQ-4</string>
 </resources>
