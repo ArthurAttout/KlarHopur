@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:drawableTop="@drawable/messenger_bubble_large_blue" />
+        android:drawableTop="@drawable/petit_48" />
 
     <Button
         android:id="@+id/buttonMediumPath"
@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:drawableTop="@drawable/messenger_bubble_large_blue" />
+        android:drawableTop="@drawable/moyen_48" />
 
     <Button
         android:id="@+id/buttonLongPath"
@@ -32,5 +32,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:drawableTop="@drawable/messenger_bubble_large_blue" />
+        android:drawableTop="@drawable/grand_48" />
 </LinearLayout>

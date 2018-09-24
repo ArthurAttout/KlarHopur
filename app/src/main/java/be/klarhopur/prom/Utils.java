@@ -71,6 +71,17 @@ public class Utils {
     }
 
     private static void createRouteBuilder(final ArrayList<PointOfInterest> pointsOfInterest, final LatLng origin, final LatLng destination, final PathComputedCallback callback) {
+
+        //Sort by distance from origin
+        Collections.sort(pointsOfInterest, new Comparator<PointOfInterest>() {
+            @Override
+            public int compare(PointOfInterest o1, PointOfInterest o2) {
+                if(calculateDistanceFromPoints(o1.getLatLng(),origin) > calculateDistanceFromPoints(o2.getLatLng(),origin)) return 1;
+                if(calculateDistanceFromPoints(o1.getLatLng(),origin) < calculateDistanceFromPoints(o2.getLatLng(),origin)) return -1;
+                return 0;
+            }
+        });
+
         DirectionDestinationRequest builder = GoogleDirection.withServerKey(API_KEY).from(origin);
         for (PointOfInterest pointOfInterest : pointsOfInterest) {
             builder = builder.and(pointOfInterest.getLatLng());
@@ -178,7 +189,7 @@ public class Utils {
                     selectOnlyClosePoints(pointsOfInterest, currentPosition, bestPointOfInterest.getLatLng());
 
                     Log.i("generator","random N first");
-                    selectRandomNFirstElements(pointsOfInterest, (int)distanceMeters/200);
+                    selectRandomNFirstElements(pointsOfInterest, (int)distanceMeters/800);
 
                     createRouteBuilder(pointsOfInterest,currentPosition,bestPointOfInterest.getLatLng(),callback);
                 }

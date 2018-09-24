@@ -137,7 +137,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getBaseContext(), RandomPathActivity.class);
-                intent.putExtra("type",EnumTypeRandomPath.SHORT);
+                Bundle b = new Bundle();
+                b.putInt("type",EnumTypeRandomPath.SHORT.ordinal());
+                intent.putExtras(b);
                 startActivity(intent);
             }
         });
@@ -146,7 +148,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getBaseContext(), RandomPathActivity.class);
-                intent.putExtra("type",EnumTypeRandomPath.MEDIUM);
+                Bundle b = new Bundle();
+                b.putInt("type",EnumTypeRandomPath.MEDIUM.ordinal());
+                intent.putExtras(b);
                 startActivity(intent);
             }
         });
@@ -155,7 +159,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getBaseContext(), RandomPathActivity.class);
-                intent.putExtra("type",EnumTypeRandomPath.LONG);
+                Bundle b = new Bundle();
+                b.putInt("type",EnumTypeRandomPath.LONG.ordinal());
+                intent.putExtras(b);
                 startActivity(intent);
             }
         });

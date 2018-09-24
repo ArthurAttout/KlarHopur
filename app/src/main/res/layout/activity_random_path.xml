@@ -6,14 +6,14 @@ android:layout_width="match_parent"
 android:layout_height="match_parent"
 tools:context=".RandomPathActivity">
 
-<com.google.android.gms.maps.MapView
-    android:id="@+id/mapView"
-    android:layout_width="0dp"
-    android:layout_height="0dp"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/map"
+    android:name="com.google.android.gms.maps.SupportMapFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MapsActivityTest" />
 
 <android.support.constraint.ConstraintLayout
     android:id="@+id/constraintLayout"
@@ -55,14 +55,16 @@ tools:context=".RandomPathActivity">
 
     <Button
         android:id="@+id/bycicle_distance_time_button"
+        android:enabled="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
-        android:backgroundTint="@color/fui_transparent"
+        android:backgroundTint="@color/browser_actions_bg_grey"
+        android:drawableTint="@android:color/black"
         android:drawableLeft="@drawable/baseline_directions_bike_white_18"
-        android:text="2 min"
-        android:textColor="@color/tw__solid_white"
+        android:text="(bientôt disponible ...)"
+        android:textColor="@android:color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/walk_distance_time_button" />
 
@@ -94,7 +96,7 @@ tools:context=".RandomPathActivity">
         android:id="@+id/prom_floatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_margin="20dp"
         android:clickable="true"
         app:backgroundTint="@color/colorPrimaryDark"
         app:layout_anchor="@+id/bottom_sheet"
@@ -122,8 +124,8 @@ tools:context=".RandomPathActivity">
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="24dp"
-                android:layout_marginTop="24dp"
-                android:text="PROM"
+                android:layout_marginTop="32dp"
+                android:text="PROM !"
                 android:textColor="@color/fui_linkColor"
                 android:textSize="16sp"
                 android:textStyle="bold"
