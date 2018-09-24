@@ -3,10 +3,8 @@ package be.klarhopur.prom;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -66,28 +64,65 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void openDialog() {
-        View view = getLayoutInflater().inflate(R.layout.dialog_bottom_sheet, null);
+        View view = getLayoutInflater().inflate(R.layout.bottom_sheet_choose_path, null);
+        final BottomSheetDialog dialog = new BottomSheetDialog(this);
         view.findViewById(R.id.imageButtonAtoB).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(getBaseContext(), AtoBPathActivity.class);
+                startActivity(intent);
             }
         });
 
         view.findViewById(R.id.imageButtonDistance).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(getBaseContext(), DistancePathActivity.class);
+                startActivity(intent);
             }
         });
 
         view.findViewById(R.id.imageButtonRandom).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                dialog.dismiss();
+                openDialogRandomPath();
             }
         });
+
+        dialog.setContentView(view);
+        dialog.show();
+    }
+
+    private void openDialogRandomPath() {
+        View view = getLayoutInflater().inflate(R.layout.bottom_sheet_random_path, null);
         BottomSheetDialog dialog = new BottomSheetDialog(this);
+        view.findViewById(R.id.buttonShortPath).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), RandomPathActivity.class);
+                intent.putExtra("type",EnumTypeRandomPath.SHORT);
+                startActivity(intent);
+            }
+        });
+
+        view.findViewById(R.id.buttonMediumPath).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), RandomPathActivity.class);
+                intent.putExtra("type",EnumTypeRandomPath.MEDIUM);
+                startActivity(intent);
+            }
+        });
+
+        view.findViewById(R.id.buttonLongPath).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), RandomPathActivity.class);
+                intent.putExtra("type",EnumTypeRandomPath.LONG);
+                startActivity(intent);
+            }
+        });
         dialog.setContentView(view);
         dialog.show();
     }
@@ -141,43 +176,43 @@ public class MainActivity extends AppCompatActivity {
         });
 
         firebaseDatabase
-                .child("users")
-                .child(user.getUid())
-                .child("path_history")
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        final HashMap<String,Map<String,Object>> data = (HashMap<String, Map<String,Object>>) dataSnapshot.getValue();
-                        if(data == null)return;
+            .child("users")
+            .child(user.getUid())
+            .child("path_history")
+            .addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    final HashMap<String,Map<String,Object>> data = (HashMap<String, Map<String,Object>>) dataSnapshot.getValue();
+                    if(data == null)return;
 
-                        final ArrayList<PathRecord> records = new ArrayList<>();
-                        for (Map.Entry<String, Map<String,Object>> stringObjectEntry : data.entrySet()) {
-                            final PathRecord record = PathRecord.fromDataSnapshot(stringObjectEntry.getValue());
-                            Map<String,Boolean> poiMap = (Map<String, Boolean>) stringObjectEntry.getValue().get("poi");
+                    final ArrayList<PathRecord> records = new ArrayList<>();
+                    for (Map.Entry<String, Map<String,Object>> stringObjectEntry : data.entrySet()) {
+                        final PathRecord record = PathRecord.fromDataSnapshot(stringObjectEntry.getValue());
+                        Map<String,Boolean> poiMap = (Map<String, Boolean>) stringObjectEntry.getValue().get("poi");
 
-                            for (Map.Entry<String, Boolean> stringBooleanEntry : poiMap.entrySet()) {
-                                firebaseDatabase
-                                    .child("poi")
-                                    .child(stringBooleanEntry.getKey())
-                                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                            PointOfInterest pointOfInterest = PointOfInterest.fromDataSnapshot((Map<String, Object>) dataSnapshot.getValue());
-                                            record.addPOI(pointOfInterest);
-                                        }
+                        for (Map.Entry<String, Boolean> stringBooleanEntry : poiMap.entrySet()) {
+                            firebaseDatabase
+                                .child("poi")
+                                .child(stringBooleanEntry.getKey())
+                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        PointOfInterest pointOfInterest = PointOfInterest.fromDataSnapshot((Map<String, Object>) dataSnapshot.getValue());
+                                        record.addPOI(pointOfInterest);
+                                    }
 
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {}
-                                    });
-                            }
-                            records.add(record);
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {}
+                                });
                         }
-                        adapter.setHistory(records);
+                        records.add(record);
                     }
+                    adapter.setHistory(records);
+                }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {}
-                });
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {}
+            });
     }
 
     public class HistoryAdapter extends RecyclerView.Adapter<ParentViewHolder> {

@@ -3,4 +3,7 @@
     <string name="action_sign_out">Déconnexion</string>
     <string name="no_history_yet">Vous n\'avez pas encore de promenades</string>
     <string name="you_should_try">Vous devriez essayer d\'en faire une !</string>
+    <string name="short_path_label">Court</string>
+    <string name="medium_path_label">Moyen</string>
+    <string name="long_path_label">Long</string>
 </resources>
