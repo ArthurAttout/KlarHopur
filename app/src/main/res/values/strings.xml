@@ -8,4 +8,5 @@
     <string name="long_path_label">Long</string>
     <string name="google_maps_API_key">AIzaSyBFq2SQVMPitUVloTVGhpF2OcMYZMtzQ-4</string>
     <string name="title_activity_maps_test">Map</string>
+    <string name="title_activity_user_walk_map">Map</string>
 </resources>
