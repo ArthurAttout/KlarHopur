@@ -189,7 +189,7 @@ public class Utils {
                     selectOnlyClosePoints(pointsOfInterest, currentPosition, bestPointOfInterest.getLatLng());
 
                     Log.i("generator","random N first");
-                    selectRandomNFirstElements(pointsOfInterest, (int)distanceMeters/800);
+                    selectRandomNFirstElements(pointsOfInterest, (int)distanceMeters/1000);
 
                     createRouteBuilder(pointsOfInterest,currentPosition,bestPointOfInterest.getLatLng(),callback);
                 }

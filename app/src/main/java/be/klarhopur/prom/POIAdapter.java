@@ -28,7 +28,7 @@ class POIAdapter extends RecyclerView.Adapter<POIAdapter.POIViewHolder> {
     @Override
     public POIViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         ConstraintLayout v = (ConstraintLayout) LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.poi_list_elements, parent, false);
+            .inflate(R.layout.poi_list_elements, parent, false);
         viewHolder = new POIAdapter.POIViewHolder(v);
         return viewHolder;
     }

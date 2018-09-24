@@ -1,17 +1,24 @@
 package be.klarhopur.prom;
 
+import android.animation.LayoutTransition;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.akexorcist.googledirection.model.Direction;
@@ -21,10 +28,12 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -37,7 +46,9 @@ public class RandomPathActivity extends AppCompatActivity implements View.OnClic
     private Location lastKnownLocation;
     private TextView textViewTime;
     private TextView textViewDistance;
+    private RecyclerView recyclerViewPOI;
     private TextView textViewViaPOI;
+    private ImageView backArrow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +62,8 @@ public class RandomPathActivity extends AppCompatActivity implements View.OnClic
 
         View bottomSheet = findViewById( R.id.bottom_sheet );
         textViewTime = findViewById(R.id.bottom_time_text_view);
+        backArrow = findViewById(R.id.back_arrow);
+        recyclerViewPOI = findViewById(R.id.recyclerViewPOI);
         textViewDistance = findViewById(R.id.bottom_distance_text_view);
         textViewViaPOI = findViewById(R.id.bottom_via_poi_text_view);
 
@@ -58,7 +71,12 @@ public class RandomPathActivity extends AppCompatActivity implements View.OnClic
 
         textViewDistance = findViewById(R.id.bottom_distance_text_view);
 
-
+        backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         button.setOnClickListener(this);
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         mBottomSheetBehavior.setPeekHeight(300);  // 0 if you don't want to show the bottom sheet on the starting activity.
@@ -140,12 +158,6 @@ public class RandomPathActivity extends AppCompatActivity implements View.OnClic
                     options.addAll(Utils.decodePoly(direction.getRouteList().get(0).getOverviewPolyline().getRawPointList()));
                     mMap.addPolyline(options);
 
-                    for (PointOfInterest pointOfInterest : pointsOfInterests) {
-                        mMap.addMarker(new MarkerOptions()
-                                .title((pointsOfInterests.indexOf(pointOfInterest)+1) + " - " + pointOfInterest.getName())
-                                .position(pointOfInterest.getLatLng()));
-                    }
-
                     updateViews(direction,pointsOfInterests,origin,destination);
                 }
             }
@@ -163,6 +175,12 @@ public class RandomPathActivity extends AppCompatActivity implements View.OnClic
                     .title(pointsOfInterests.indexOf(pointOfInterest) + " - " + pointOfInterest.getName())
                     .position(pointOfInterest.getLatLng()));
         }
+
+        mMap.addMarker(new MarkerOptions()
+                .title("Arrivée")
+                .position(destination)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+
 
         int totalSeconds = 0;
         double totalDistanceMeters = 0;
@@ -197,8 +215,10 @@ public class RandomPathActivity extends AppCompatActivity implements View.OnClic
         }
 
         textViewDistance.setText(outDistance);
-
         textViewViaPOI.setText(String.format("via %d points d'intérêt", pointsOfInterests.size()));
+
+        recyclerViewPOI.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewPOI.setAdapter(new POIAdapter(new ArrayList<>(pointsOfInterests)));
     }
 
     private void handleMediumPath(LatLng currentLatLng) {
@@ -211,13 +231,6 @@ public class RandomPathActivity extends AppCompatActivity implements View.OnClic
                     PolylineOptions options = new PolylineOptions();
                     options.addAll(Utils.decodePoly(direction.getRouteList().get(0).getOverviewPolyline().getRawPointList()));
                     mMap.addPolyline(options);
-
-                    for (PointOfInterest pointOfInterest : pointsOfInterests) {
-                        mMap.addMarker(new MarkerOptions()
-                            .title((pointsOfInterests.indexOf(pointOfInterest)+1) + " - " + pointOfInterest.getName())
-                            .position(pointOfInterest.getLatLng()));
-                    }
-
                     updateViews(direction,pointsOfInterests,origin,destination);
                 }
             }
@@ -234,15 +247,11 @@ public class RandomPathActivity extends AppCompatActivity implements View.OnClic
                     PolylineOptions options = new PolylineOptions();
                     options.addAll(Utils.decodePoly(direction.getRouteList().get(0).getOverviewPolyline().getRawPointList()));
                     mMap.addPolyline(options);
-
-                    for (PointOfInterest pointOfInterest : pointsOfInterests) {
-                        mMap.addMarker(new MarkerOptions()
-                                .title((pointsOfInterests.indexOf(pointOfInterest)+1) + " - " + pointOfInterest.getName())
-                                .position(pointOfInterest.getLatLng()));
-                    }
                     updateViews(direction,pointsOfInterests,origin,destination);
                 }
             }
         );
     }
+
+
 }
