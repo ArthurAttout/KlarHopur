@@ -152,7 +152,7 @@
         app:srcCompat="@drawable/outline_info_white_24" />
 
     <ImageButton
-        android:id="@+id/imageButton2"
+        android:id="@+id/imageButtonDone"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

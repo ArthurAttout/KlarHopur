@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -36,6 +37,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,12 +58,16 @@ public class AtoBPathActivity extends AppCompatActivity implements OnMapReadyCal
     private GoogleMap mMap;
     private RecyclerView recyclerViewPOI;
     private Location lastKnownLocation;
+    private ImageButton imageButtonDone;
 
     private LocationManager locationManager;
     private Direction direction;
     private ArrayList<PointOfInterest> pointsOfInterest;
     private LatLng origin;
     private LatLng destination;
+
+    private Marker markerStart;
+    private Marker markerEnd;
 
     private String startID;
     private String endID;
@@ -91,7 +97,19 @@ public class AtoBPathActivity extends AppCompatActivity implements OnMapReadyCal
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(direction == null || pointsOfInterest == null || origin == null || destination == null) return;
 
+                Intent intent = new Intent(getBaseContext(), UserWalkMapActivity.class);
+                Bundle b = new Bundle();
+
+                b.putParcelable("origin",origin);
+                b.putParcelable("destination",destination);
+                b.putString("polyline",direction.getRouteList().get(0).getOverviewPolyline().getRawPointList());
+                b.putParcelableArrayList("pointsOfInterest",pointsOfInterest);
+                b.putParcelable("direction",direction);
+
+                intent.putExtras(b);
+                startActivity(intent);
             }
         });
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
@@ -104,6 +122,22 @@ public class AtoBPathActivity extends AppCompatActivity implements OnMapReadyCal
         textViewDistance = findViewById(R.id.bottom_distance_text_view);
         textViewViaPOI = findViewById(R.id.bottom_via_poi_text_view);
         textViewDistance = findViewById(R.id.bottom_distance_text_view);
+        imageButtonDone = findViewById(R.id.imageButtonDone);
+
+        imageButtonDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utils.getRouteFromAtoB(markerStart.getPosition(),markerEnd.getPosition(), new Utils.PathComputedCallback() {
+                    @Override
+                    public void onPathComputed(Direction direction, List<PointOfInterest> pointsOfInterests, LatLng origin, LatLng destination) {
+                        PolylineOptions options = new PolylineOptions();
+                        options.addAll(Utils.decodePoly(direction.getRouteList().get(0).getOverviewPolyline().getRawPointList()));
+                        mMap.addPolyline(options);
+                        updateViews(direction,pointsOfInterests,origin,destination);
+                    }
+                });
+            }
+        });
 
         imageButtonInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -240,17 +274,17 @@ public class AtoBPathActivity extends AppCompatActivity implements OnMapReadyCal
 
         LatLng latLngDestination = new LatLng(currentLatLng.latitude + 0.01,currentLatLng.longitude);
 
-        final Marker start = mMap.addMarker(new MarkerOptions()
+        markerStart = mMap.addMarker(new MarkerOptions()
                 .title("Départ")
                 .draggable(true)
                 .position(currentLatLng));
-        startID = start.getId();
+        startID = markerStart.getId();
 
-        Marker end = mMap.addMarker(new MarkerOptions()
+        markerEnd = mMap.addMarker(new MarkerOptions()
                 .title("Arrivée")
                 .draggable(true)
                 .position(latLngDestination));
-        endID = end.getId();
+        endID = markerEnd.getId();
 
         mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
             @Override

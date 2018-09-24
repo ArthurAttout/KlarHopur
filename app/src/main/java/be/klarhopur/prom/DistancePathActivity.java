@@ -84,7 +84,8 @@ public class DistancePathActivity extends AppCompatActivity implements OnMapRead
             Bundle b = new Bundle();
 
             b.putParcelable("origin",origin);
-            b.putParcelable("destination",origin);
+            b.putParcelable("destination",destination);
+            b.putString("polyline",direction.getRouteList().get(0).getOverviewPolyline().getRawPointList());
             b.putParcelableArrayList("pointsOfInterest",pointsOfInterest);
             b.putParcelable("direction",direction);
 

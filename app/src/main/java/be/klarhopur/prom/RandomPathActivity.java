@@ -92,6 +92,7 @@ public class RandomPathActivity extends AppCompatActivity implements OnMapReadyC
 
                 b.putParcelable("origin",origin);
                 b.putParcelable("destination",destination);
+                b.putString("polyline",direction.getRouteList().get(0).getOverviewPolyline().getRawPointList());
                 b.putParcelableArrayList("pointsOfInterest",pointsOfInterest);
                 b.putParcelable("direction",direction);
 
