@@ -30,6 +30,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
@@ -45,7 +46,7 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
     private LatLng origin;
     private LatLng destination;
     private ArrayList<PointOfInterest> pointsOfInterests;
-    private Direction direction;
+    private String direction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +57,7 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
         origin = (LatLng) getIntent().getParcelableExtra("origin");
         destination = (LatLng) getIntent().getParcelableExtra("destination");
         pointsOfInterests = getIntent().getParcelableArrayListExtra("pointsOfInterest");
-        direction = (Direction) getIntent().getParcelableExtra("direction");
+        direction = (String) getIntent().getStringExtra("direction");
 
         bottomSheetView = findViewById(R.id.bottomSheetLayout);
         bottomSheetView.setVisibility(View.INVISIBLE);
@@ -119,6 +120,9 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
                 .position(destination)
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
 
+        PolylineOptions options = new PolylineOptions();
+        options.addAll(Utils.decodePoly(direction));
+        mMap.addPolyline(options);
 
         mMap.setOnMarkerClickListener(this);
     }
@@ -130,7 +134,7 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
             // TODO launch final activity
             //Intent intent = new Intent(this, DisplayMessageActivity.class);
             //startActivity(intent);
-        } else if (!marker.getTitle().equals("Arrivée") || !marker.getTitle().equals("Départ")) {
+        } else {
 
             bottomSheetView.setVisibility(View.VISIBLE);
             View v = findViewById(R.id.cameraActionButton);
@@ -144,11 +148,11 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
 
             TextView tv1 = (TextView)findViewById(R.id.poiName);
             tv1.setText(marker.getTitle());
+            TextView tv2 = (TextView)findViewById(R.id.poiAddress);
 
             for (PointOfInterest pointOfInterest : pointsOfInterests) {
                 if(pointOfInterest.getName().equals(marker.getTitle())){
-                    TextView tv2 = (TextView)findViewById(R.id.poiAddress);
-                    tv2.setText(marker.getTitle());
+                    tv2.setText(pointOfInterest.getAddress());
                 }
             }
 
