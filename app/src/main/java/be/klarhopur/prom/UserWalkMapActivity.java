@@ -35,18 +35,23 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import java.util.ArrayList;
 
 public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener, GoogleMap.OnMyLocationButtonClickListener,
-        GoogleMap.OnMyLocationClickListener, GoogleMap.OnMarkerClickListener {
+        GoogleMap.OnMyLocationClickListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraMoveStartedListener {
+
+    public static final String VISITED_POIS = "VISITED_POIS";
 
     private GoogleMap mMap;
     private LocationManager locationManager;
     private Marker myMarker;
     private View bottomSheetView;
+    private View multiplierView;
+    private int poiPassed = 0;
 
     // INTENT TO GET BACK
     private LatLng origin;
     private LatLng destination;
     private ArrayList<PointOfInterest> pointsOfInterests;
     private String direction;
+    private ArrayList<String> visitedPois = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +67,8 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
 
         bottomSheetView = findViewById(R.id.bottomSheetLayout);
         bottomSheetView.setVisibility(View.INVISIBLE);
+        multiplierView = findViewById(R.id.multiplierConstraint);
+        multiplierView.setVisibility(View.INVISIBLE);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -101,6 +108,7 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
         mMap.setMyLocationEnabled(true);
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationClickListener(this);
+        mMap.setOnCameraMoveStartedListener(this);
         // Add a marker in Sydney and move the camera
         //LatLng marche = new LatLng(50.248100, 5.339977);
         //myMarker = googleMap.addMarker(new MarkerOptions().position(marche));
@@ -133,8 +141,9 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
 
         if (marker.getTitle().equals("Arrivée")) {
             // TODO launch final activity
-            //Intent intent = new Intent(this, DisplayMessageActivity.class);
-            //startActivity(intent);
+            Intent intent = new Intent(this, FinishWalkActivity.class);
+            intent.putExtra(VISITED_POIS, pointsOfInterests);
+            startActivity(intent);
         } else {
 
             bottomSheetView.setVisibility(View.VISIBLE);
@@ -154,6 +163,15 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
             for (PointOfInterest pointOfInterest : pointsOfInterests) {
                 if(pointOfInterest.getName().equals(marker.getTitle())){
                     tv2.setText(pointOfInterest.getAddress());
+                    if(poiPassed == 0){
+                        multiplierView.setVisibility(View.VISIBLE);
+                    }
+                    if(!visitedPois.contains(marker.getTitle())) {
+                        visitedPois.add(marker.getTitle());
+                        poiPassed++;
+                        TextView multiplierTxt = (TextView) findViewById(R.id.multiplierText);
+                        multiplierTxt.setText("x" + poiPassed);
+                    }
                 }
             }
 
@@ -176,15 +194,7 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
     @Override
     public void onBackPressed() {
         if(bottomSheetView.getVisibility() == View.VISIBLE) {
-            bottomSheetView.setVisibility(View.INVISIBLE);
-            View v = findViewById(R.id.cameraActionButton);
-            v.setVisibility(View.VISIBLE);
-
-            View v2 = findViewById(R.id.navBarConstraintLayout);
-            //v2.setLayoutParams(new ConstraintLayout.LayoutParams());
-            ConstraintLayout.LayoutParams newLayoutParams = (ConstraintLayout.LayoutParams) v2.getLayoutParams();
-            newLayoutParams.topMargin = 0;
-            v2.setLayoutParams(newLayoutParams);
+            hideBottomPopup();
         }
     }
 
@@ -220,5 +230,33 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
     @Override
     public void onMyLocationClick(@NonNull Location location) {
         Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onCameraMoveStarted(int reason) {
+
+        if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
+            hideBottomPopup();
+        } /*else if (reason == GoogleMap.OnCameraMoveStartedListener
+                .REASON_API_ANIMATION) {
+            Toast.makeText(this, "The user tapped something on the map.",
+                    Toast.LENGTH_SHORT).show();
+        } else if (reason == GoogleMap.OnCameraMoveStartedListener
+                .REASON_DEVELOPER_ANIMATION) {
+            Toast.makeText(this, "The app moved the camera.",
+                    Toast.LENGTH_SHORT).show();
+        }*/
+    }
+
+    private void hideBottomPopup() {
+        bottomSheetView.setVisibility(View.INVISIBLE);
+        View v = findViewById(R.id.cameraActionButton);
+        v.setVisibility(View.VISIBLE);
+
+        View v2 = findViewById(R.id.navBarConstraintLayout);
+        //v2.setLayoutParams(new ConstraintLayout.LayoutParams());
+        ConstraintLayout.LayoutParams newLayoutParams = (ConstraintLayout.LayoutParams) v2.getLayoutParams();
+        newLayoutParams.topMargin = 0;
+        v2.setLayoutParams(newLayoutParams);
     }
 }
