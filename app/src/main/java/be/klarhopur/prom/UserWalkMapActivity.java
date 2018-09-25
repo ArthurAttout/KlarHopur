@@ -50,7 +50,7 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
     private Marker myMarker;
     private View bottomSheetView;
     private View multiplierView;
-    private int poiPassed = 0;
+    private int poiPassed = 1;
 
     // INTENT TO GET BACK
     private LatLng origin;
@@ -65,7 +65,7 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
 
     private LocationRequest mLocationRequest;
 
-    private float distanceTravelledMeters;
+    private double distanceTravelledMeters;
     private int pointsTotal;
     private boolean collapsableToggled;
     /**
@@ -196,7 +196,7 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
                 Location previousLocation = mCurrentLocation;
                 mCurrentLocation = locationResult.getLastLocation();
                 // TODO implement multiplier mechanism
-                float distanceInMeters = 0;
+                double distanceInMeters = 0;
                 if(previousLocation != null && mCurrentLocation != null) {
                     distanceInMeters = previousLocation.distanceTo(mCurrentLocation);
                     distanceTravelledMeters += distanceInMeters;
@@ -204,7 +204,7 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
                     distanceView.setText(String.valueOf(String.format("%.2f",distanceTravelledMeters/1000)) + " km");
                     pointsView.setText(String.valueOf(pointsTotal) + " pts");
                 }
-                Toast.makeText(UserWalkMapActivity.this, String.valueOf(distanceInMeters), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(UserWalkMapActivity.this, String.valueOf(distanceInMeters), Toast.LENGTH_SHORT).show();
 
                 // TODO implement a mechanism to prevent the bottom collapsable panel from constantly poping wwhen dismissed once
                 if(mCurrentLocation != null){
@@ -307,6 +307,8 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
             intent.putExtra("destination",destination);
             intent.putExtra("length",length);
             intent.putExtra("origin",origin);
+            intent.putExtra("length",distanceTravelledMeters);
+            intent.putExtra("points",pointsTotal);
             intent.putExtra(VISITED_POIS, pointsOfInterests);
 
             startActivity(intent);

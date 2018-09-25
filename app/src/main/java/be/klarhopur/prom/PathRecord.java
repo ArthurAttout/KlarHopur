@@ -91,8 +91,20 @@ public class PathRecord {
         double latitudeDestination = (double) ((Map)data.get("destination")).get("latitude");
         double longitudeDestination = (double) ((Map)data.get("destination")).get("longitude");
 
-        long length = (long) data.get("length");
-        long points = (long) data.get("points");
+        double length = 0;
+        double points = 0;
+
+        try{
+            length = (long) data.get("length");
+            points = (long) data.get("points");
+        }
+        catch(ClassCastException e){}
+
+        try{
+            length = (double) data.get("length");
+            points = (double) data.get("points");
+        }
+        catch (ClassCastException e){}
 
         String title = (String) data.get("title");
         String imageURL = (String) data.get("urlimg");

@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
@@ -31,6 +32,7 @@ public class FinishWalkActivity extends AppCompatActivity {
     private LatLng destination;
     private double length;
     private LatLng origin;
+    private int points;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,13 +45,14 @@ public class FinishWalkActivity extends AppCompatActivity {
         length = getIntent().getDoubleExtra("length",1);
         origin =  getIntent().getParcelableExtra("origin");
         pointsOfInterests =  getIntent().getParcelableArrayListExtra("VISITED_POIS");
+        points = getIntent().getIntExtra("points",10);
 
         if(destination != null && origin != null && pointsOfInterests != null){
             TextView textViewPoints = findViewById(R.id.textViewPoints);
             TextView textViewDistance = findViewById(R.id.textViewDistance);
 
-            textViewDistance.setText(String.valueOf(length));
-            textViewPoints.setText(String.valueOf(10));
+            textViewDistance.setText(String.format("%.2f km", length/1000));
+            textViewPoints.setText(String.valueOf(points) + " points");
 
             HashMap<String,Object> map = new HashMap<>();
             HashMap<String,Boolean> mapPoi = new HashMap<>();
@@ -58,10 +61,10 @@ public class FinishWalkActivity extends AppCompatActivity {
             }
 
             map.put("destination",destination);
-            map.put("length",length);
+            map.put("length",length/1000);
             map.put("origin",origin);
             map.put("poi",mapPoi);
-            map.put("points",10);
+            map.put("points",points);
             map.put("title","Balade auto-générée");
             map.put("urlimg","https://prom.longree.be/img/Capture2.png");
 

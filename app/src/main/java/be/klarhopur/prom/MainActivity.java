@@ -291,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
                 final PathRecord record = history.get(position);
 
                 viewHolderTemp.mainTextView.setText(record.getTitle());
-                viewHolderTemp.secondTextView.setText(record.getDistanceKilometer() + " km  -  " + record.getPoints() + " pts");
+                viewHolderTemp.secondTextView.setText(String.format("%.2f km  -  %.2f pts", record.getDistanceKilometer(), record.getPoints()));
                 Picasso.get().load(record.getImageURL()).into(viewHolderTemp.imageMap);
                 viewHolderTemp.recyclerViewPOI.setVisibility(record.isExpanded() ? View.VISIBLE : View.GONE);
                 viewHolderTemp.recyclerViewPOI.setLayoutManager(new LinearLayoutManager(MainActivity.this));
