@@ -50,7 +50,7 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
     private Marker myMarker;
     private View bottomSheetView;
     private View multiplierView;
-    private int poiPassed = 1;
+    private int poiPassed = 0;
 
     // INTENT TO GET BACK
     private LatLng origin;
@@ -221,7 +221,7 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
                                 tv1.setText(pointOfInterest.getName());
                                 TextView tv2 = (TextView)findViewById(R.id.poiAddress);
                                 tv2.setText(pointOfInterest.getAddress());
-                                if(poiPassed == 1){
+                                if(poiPassed == 0){
                                     multiplierView.setVisibility(View.VISIBLE);
                                 }
                                 if(!visitedPois.contains(pointOfInterest.getName())) {
@@ -338,7 +338,7 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
                         visitedPois.add(marker.getTitle());
                         poiPassed++;
                         TextView multiplierTxt = (TextView) findViewById(R.id.multiplierText);
-                        multiplierTxt.setText("x" + poiPassed);
+                        multiplierTxt.setText("x" + (poiPassed+1));
                     }
                 }
             }
