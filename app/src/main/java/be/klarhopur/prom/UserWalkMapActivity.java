@@ -221,7 +221,7 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
                                 tv1.setText(pointOfInterest.getName());
                                 TextView tv2 = (TextView)findViewById(R.id.poiAddress);
                                 tv2.setText(pointOfInterest.getAddress());
-                                if(poiPassed == 0){
+                                if(poiPassed == 1){
                                     multiplierView.setVisibility(View.VISIBLE);
                                 }
                                 if(!visitedPois.contains(pointOfInterest.getName())) {
