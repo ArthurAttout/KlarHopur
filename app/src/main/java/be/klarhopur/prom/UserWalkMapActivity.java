@@ -155,6 +155,9 @@ public class UserWalkMapActivity extends FragmentActivity implements OnMapReadyC
         mMap.addPolyline(options);
 
         mMap.setOnMarkerClickListener(this);
+
+        Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if(lastKnownLocation != null) onLocationChanged(lastKnownLocation);
     }
 
     @Override
