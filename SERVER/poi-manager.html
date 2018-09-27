@@ -1,0 +1,312 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Prom' - POI Managers</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+        <link rel="stylesheet" href="main.css">
+        <!-- CORE CSS-->
+        <link href="css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection">
+        <link href="css/style.min.css" type="text/css" rel="stylesheet" media="screen,projection">
+        <!-- Custome CSS-->
+        <link href="css/custom/custom.min.css" type="text/css" rel="stylesheet" media="screen,projection">
+
+        <!-- INCLUDED PLUGIN CSS ON THIS PAGE -->
+        <link href="js/plugins/prism/prism.css" type="text/css" rel="stylesheet" media="screen,projection">
+        <!--dropify-->
+        <link href="js/plugins/dropify/css/dropify.min.css" type="text/css" rel="stylesheet" media="screen,projection">
+
+
+        <!-- jQuery Library -->
+        <script type="text/javascript" src="js/plugins/jquery-1.11.2.min.js"></script>
+        <!--angularjs-->
+        <script type="text/javascript" src="js/plugins/angular.min.js"></script>
+        <!--materialize js-->
+        <script type="text/javascript" src="js/materialize.min.js"></script>
+        <!--prism -->
+        <script type="text/javascript" src="js/plugins/prism/prism.js"></script>
+        <!--scrollbar-->
+        <script type="text/javascript" src="js/plugins/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+        <!-- chartist -->
+        <script type="text/javascript" src="js/plugins/chartist-js/chartist.min.js"></script>
+        <!-- dropify -->
+        <script type="text/javascript" src="js/plugins/dropify/js/dropify.min.js"></script>
+        <!--plugins.js - Some Specific JS codes for Plugin Settings-->
+        <script type="text/javascript" src="js/plugins.min.js"></script>
+        <!--custom-script.js - Add your own theme custom JS-->
+        <script type="text/javascript" src="js/custom-script.js"></script>
+
+        <script type="text/javascript">
+            $(document).ready(function(){
+                // Basic
+                $('.dropify').dropify();
+
+                // Translated
+                $('.dropify-fr').dropify({
+                    messages: {
+                        default: 'Glissez-déposez un fichier ici ou cliquez',
+                        replace: 'Glissez-déposez un fichier ou cliquez pour remplacer',
+                        remove:  'Supprimer',
+                        error:   'Désolé, le fichier trop volumineux'
+                    }
+                });
+
+                // Used events
+                var drEvent = $('.dropify-event').dropify();
+
+                drEvent.on('dropify.beforeClear', function(event, element){
+                    return confirm("Do you really want to delete \"" + element.filename + "\" ?");
+                });
+
+                drEvent.on('dropify.afterClear', function(event, element){
+                    alert('File deleted');
+                });
+            });
+        </script>
+
+        <script src="https://www.gstatic.com/firebasejs/5.5.1/firebase.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/5.5.1/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/5.5.1/firebase-auth.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/5.5.1/firebase-database.js"></script>
+        <script type="text/javascript" src="js/firebase.js"></script>
+        <script type="text/javascript" src="js/tools.js"></script>
+        <script type="text/javascript" src="js/google-signin.js"></script>
+        <script type="text/javascript" src="js/email-signin.js"></script>
+        <script type="text/javascript">
+
+            firebase.auth().onAuthStateChanged(function(user) {
+                if(user) {
+                    /*alert("User is logged in");
+                    alert(user.uid);*/
+                    //document.getElementById('quickstart-sign-in-status').textContent = 'Signed in';
+                    //document.getElementById('quickstart-account-details').textContent = JSON.stringify(user, null, '  ');
+
+                    if(user.providerData.providerId === "google.com") {
+                        document.getElementById('google-sign-in').addEventListener('click', toggleGoogleSignIn, false);
+                    } else {
+                        document.getElementById('email-sign-in').addEventListener('click', toggleEmailSignIn, false);
+                    }
+
+                    fetchUserPois(user);
+
+                } else {
+                    //alert("User is NOT logged in");
+                    document.getElementById('quickstart-sign-in-status').textContent = 'Signed out';
+                    document.getElementById('quickstart-account-details').textContent = 'null';
+                    redirect(0);
+                }
+            });
+
+            function fetchUserPois(user) {
+                var poiRef = firebase.database().ref('poi');
+                    poiRef.on('value', function(snapshot) {
+                        var poiList = "";
+                        console.log(snapshot.val());
+                        for (var key in snapshot.val()) {
+                            if (snapshot.val()[key].uid === user.uid) {
+                              poiList += "<div class=\"card\">";
+                              poiList += "<div class=\"card-image waves-effect waves-block waves-light\"><img class=\"activator\" alt='' src='" + snapshot.val()[key].urlimage + "'></div>";
+                              poiList += "<div class=\"card-content\"><span class=\"card-title activator grey-text text-darken-4\">" + snapshot.val()[key].name + "<i class=\"mdi-navigation-more-vert right\"></i></span>";
+                              poiList += "<p><b> Approved:</b> " + snapshot.val()[key].approved + "</p>"
+                              poiList += "</div>";
+                              poiList += "<div class=\"card-reveal\">";
+                              poiList += "<span class=\"card-title grey-text text-darken-4\">" + snapshot.val()[key].name + "<i class=\"mdi-navigation-close right\"></i></span>";
+
+                              poiList += "<p>" + snapshot.val()[key].userfriendlyaddress + "</p>";
+                              poiList += "<h3>QR code</h3><p><img src='https://api.qrserver.com/v1/create-qr-code/?data=" + snapshot.val()[key].qrcode + "&amp;size=100x100' alt='' title='' /></p>";
+                              poiList += "<h3>Boost</h3>";
+                              poiList += "<p>" + snapshot.val()[key].boost + "</p>";
+                              poiList += "</div></div>";
+                              /*
+                                poiList += "<ul>";
+                                poiList += "<li>POI " + key + "</li>";
+                                poiList += "<li><b> Approved:</b> " + snapshot.val()[key].approved + "</li>";
+                                poiList += "<ul>";
+                                poiList += "<li><b>POI image</b><br/><img height='200' src='" + snapshot.val()[key].urlimage + "'/></li>";
+                                poiList += "<li>" + snapshot.val()[key].name + "</li>";
+                                poiList += "<li>" + snapshot.val()[key].userfriendlyaddress + "</li>";
+                                poiList += "<li>" + snapshot.val()[key].latitude + "</li>";
+                                poiList += "<li>" + snapshot.val()[key].longitude + "</li>";
+                                poiList += "<li><b>QR code</b><br/><img src='https://api.qrserver.com/v1/create-qr-code/?data=" + snapshot.val()[key].qrcode
+                                    + "&amp;size=100x100' alt='' title='' /></li>";
+                                poiList += "<li>" + snapshot.val()[key].boost + "</li>";
+                                poiList += "</ul>";
+                                poiList += "</ul>";*/
+                                //document.getElementById('key').addEventListener('click', setPoiApproved(key), false);
+                            }
+                        }
+                        console.log(poiList);
+                        document.getElementById("my-pois").innerHTML = poiList;
+                    });
+            }
+
+            function create_UUID(){
+                var dt = new Date().getTime();
+                var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                    var r = (dt + Math.random()*16)%16 | 0;
+                    dt = Math.floor(dt/16);
+                    return (c=='x' ? r :(r&0x3|0x8)).toString(16);
+                });
+                return uuid;
+            }
+
+            function newPoiToggle() {
+                var x = document.getElementById("form");
+                if (document.getElementById("form").style.display === "none") {
+                    document.getElementById("form").style.display = "block";
+                    document.getElementById("add-poi").classList.remove("none");
+                    document.getElementById('new-poi').textContent = "Cancel";
+                } else {
+                    document.getElementById("form").style.display = "none";
+                    document.getElementById("add-poi").classList.add("none");
+                    document.getElementById('new-poi').textContent = "New POI";
+                }
+
+            }
+
+            function getAddress(lat, long) {
+                var url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + long + "&key=AIzaSyAcIAL30EXjd3D62rn5LZLt_iMPAQzz7VM";
+                var address;
+                return fetch(url, {
+                    method: "POST", // *GET, POST, PUT, DELETE, etc.
+                })
+                /*.then(response => {
+                    //console.log(response.json());
+                    return response.json().then(
+                                function(object) {
+                                    console.log(object.results[0].formatted_address);
+                                    address = object.results[0].formatted_address;
+                                    //document.getElementById('input-imgurl').value = object.URL;
+                                }
+                            );
+                });*/
+            }
+
+            function addNewPoi() {
+                // todo add POI in database
+                var poiUuid = create_UUID();
+                getAddress(parseFloat(document.getElementById('input-lat').value), parseFloat(document.getElementById('input-long').value))
+                .then(function(response) {
+                    response.json().then(
+                        function(object) {
+                        var poiAddress = object.results[0].formatted_address;
+                        console.log(poiUuid);
+                        console.log(poiAddress);
+                        firebase.database().ref('poi/' + poiUuid).set({
+                            approved: false,
+                            boost: 0,
+                            name: document.getElementById('input-name').value,
+                            latitude: parseFloat(document.getElementById('input-lat').value),
+                            longitude: parseFloat(document.getElementById('input-long').value),
+                            qrcode: poiUuid,
+                            uid: firebase.auth().currentUser.uid,
+                            urlimage: document.getElementById('input-imgurl').value,
+                            userfriendlyaddress: poiAddress
+                        }).then( function() {
+                            //TODO redirect user to
+                            document.getElementById('input-name').value = "";
+                            document.getElementById('input-lat').value = "";
+                            document.getElementById('input-long').value = "";
+                            document.getElementById('input-imgurl').value = "";
+                            newPoiToggle();
+                        }).catch(function(error) {
+                            alert(error);
+                        });
+                    });
+                });
+            }
+
+            function postData( data = {}) {
+            // Default options are marked with *
+                return fetch("https://prom.longree.be/upload", {
+                    method: "POST", // *GET, POST, PUT, DELETE, etc.
+                    body: data, // body data type must match "Content-Type" header
+                })
+                .then(response => {return response}); // parses response to JSON
+            }
+
+            function previewFile(){
+                var preview = document.querySelector('img'); //selects the query named img
+                var file    = document.querySelector('input[type=file]').files[0]; //sames as here
+                var reader  = new FileReader();
+
+                reader.onloadend = function () {
+                    preview.src = reader.result;
+                    postData(reader.result.split(',').pop())
+                        .then(data => {
+                            console.log(data.json().then(
+                                function(object) {
+                                    console.log(object.URL);
+                                    document.getElementById('input-imgurl').value = object.URL;
+                                }
+                            ));
+                        }) // JSON-string from `response.json()` call
+                        .catch(error => {console.error(error)});
+                }
+
+                if (file) {
+                    reader.readAsDataURL(file); //reads the data as a URL
+                } else {
+                    preview.src = "";
+                }
+            }
+
+            window.onload = function() {
+                document.getElementById('form').style.display = "none";
+                document.getElementById('new-poi').addEventListener('click', newPoiToggle, false);
+                document.getElementById('add-poi').addEventListener('click', addNewPoi, false);
+
+                console.log(getAddress(50.228346, 5.335968));
+            };
+
+        </script>
+    </head>
+    <body id="mybackground">
+
+      <div class="row">
+        <div class="col s12 m6 l6 offset-m3 offset-l3 z-depth-4 card-panel">
+          <h1>Welcome PoI manager</h1>
+
+        <div id="form">
+            <form>
+
+                <input type="text" id="input-name" name="name" placeholder="Name"><br/>
+
+                <input type="text" id="input-lat" name="latitude" placeholder="Latitude"><br/>
+
+                <input type="text" id="input-long" name="longitude" placeholder="Longitude"><br/>
+
+                <input type="text" id="input-imgurl" name="imgurl" readonly placeholder="URL Image"><br/>
+                <!--<input type="file" onchange="previewFile()" ><br>
+                <img src="null" alt="Image preview..."/>-->
+
+                <div id="file-upload" class="section">
+                  <input type="file" id="input-file-now" onchange="previewFile()" class="dropify" data-default-file="" />
+
+                </div>
+
+            </form>
+        </div>
+
+    		<div class="center">
+    		<a id="add-poi" name="addpoi" class="waves-effect waves-light btn none" style="margin-bottom:1rem !important;">Add POI</a>
+    		<a id="new-poi" name="newpoi"class="waves-effect waves-light btn" style="margin-left: 1rem !important; margin-bottom:1rem !important;">New POI</a>
+    		</div>
+
+      </div>
+    </div>
+
+<div class="row">
+  <div id="my-pois" class="col s6 offset-s3 card-pannel center">
+    <h1>My POI</h1>
+    <a id="email-sign-in" class="waves-effect waves-light btn" name="signin">Sign out</a>
+    <br/>
+  </div>
+</div>
+        <!--
+        <div class="quickstart-user-details-container">
+				Firebase sign-in status: <span id="quickstart-sign-in-status">Unknown</span>
+				<div>Firebase auth <code>currentUser</code> object value:</div>
+				<pre><code id="quickstart-account-details">null</code></pre>
+        </div> -->
+    </body>
+</html>

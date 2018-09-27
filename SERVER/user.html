@@ -1,0 +1,70 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Prom' - Users</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+
+      	<link rel="stylesheet" href="main.css">
+      	<!-- CORE CSS-->
+
+        <link href="css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection">
+        <link href="css/style.min.css" type="text/css" rel="stylesheet" media="screen,projection">
+          <!-- Custome CSS-->
+          <link href="css/custom/custom.min.css" type="text/css" rel="stylesheet" media="screen,projection">
+        <link href="css/layouts/page-center.css" type="text/css" rel="stylesheet" media="screen,projection">
+
+        <!-- INCLUDED PLUGIN CSS ON THIS PAGE -->
+        <link href="js/plugins/prism/prism.css" type="text/css" rel="stylesheet" media="screen,projection">
+        <link href="js/plugins/perfect-scrollbar/perfect-scrollbar.css" type="text/css" rel="stylesheet" media="screen,projection">
+
+      <script type="text/javascript" src="js/plugins/jquery-1.11.2.min.js"></script>
+
+        <script src="https://www.gstatic.com/firebasejs/5.5.1/firebase.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/5.5.1/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/5.5.1/firebase-auth.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/5.5.1/firebase-database.js"></script>
+        <script type="text/javascript" src="js/firebase.js"></script>
+        <script type="text/javascript" src="js/tools.js"></script>
+        <script type="text/javascript" src="js/google-signin.js"></script>
+        <script type="text/javascript" src="js/email-signin.js"></script>
+        <script type="text/javascript">
+            firebase.auth().onAuthStateChanged(function(user) {
+                if(user) {
+                    /*alert("User is logged in");
+                    alert(user.uid);*/
+                    //document.getElementById('quickstart-sign-in-status').textContent = 'Signed in';
+                    //document.getElementById('quickstart-account-details').textContent = JSON.stringify(user, null, '  ');
+
+                    if(user.providerData.providerId === "google.com") {
+                        document.getElementById('google-sign-in').addEventListener('click', toggleGoogleSignIn, false);
+                    } else {
+                        document.getElementById('email-sign-in').addEventListener('click', toggleEmailSignIn, false);
+                    }
+
+                } else {
+                    //alert("User is NOT logged in");
+                    //document.getElementById('quickstart-sign-in-status').textContent = 'Signed out';
+                    //document.getElementById('quickstart-account-details').textContent = 'null';
+                    redirect(0);
+                }
+            });
+
+        </script>
+    </head>
+    <body id="mybackground">
+      <div class="row center">
+        <div class="col s12 z-depth-4 card-panel">
+          <h1>Bienvenu sur Prom'</h1>
+          <p>Allez vous promener avec Prom'</p>
+          <a class="waves-effect waves-light btn" id="email-sign-in" name="signin" style="margin-bottom:1rem !important">Sign out</a><br/>
+        </div>
+      </div>
+        <!--
+        <div class="quickstart-user-details-container">
+				Firebase sign-in status: <span id="quickstart-sign-in-status">Unknown</span>
+				<div>Firebase auth <code>currentUser</code> object value:</div>
+				<pre><code id="quickstart-account-details">null</code></pre>
+        </div>
+        -->
+    </body>
+</html>

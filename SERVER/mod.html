@@ -1,0 +1,142 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Prom' - Moderators</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+		<link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="main.css">
+			<!-- CORE CSS-->
+
+  <link href="css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection">
+  <link href="css/style.min.css" type="text/css" rel="stylesheet" media="screen,projection">
+    <!-- Custome CSS-->
+    <link href="css/custom/custom.min.css" type="text/css" rel="stylesheet" media="screen,projection">
+  <link href="css/layouts/page-center.css" type="text/css" rel="stylesheet" media="screen,projection">
+  <!-- INCLUDED PLUGIN CSS ON THIS PAGE -->
+<link href="js/plugins/prism/prism.css" type="text/css" rel="stylesheet" media="screen,projection">
+<link href="js/plugins/perfect-scrollbar/perfect-scrollbar.css" type="text/css" rel="stylesheet" media="screen,projection">
+<link href="js/plugins/chartist-js/chartist.min.css" type="text/css" rel="stylesheet" media="screen,projection">
+<script type="text/javascript" src="js/plugins/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="js/materialize.min.js"></script>
+<script type="text/javascript" src="js/plugins/prism/prism.js"></script>
+<script type="text/javascript" src="js/plugins.min.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/5.5.1/firebase.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/5.5.1/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/5.5.1/firebase-auth.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/5.5.1/firebase-database.js"></script>
+        <script type="text/javascript" src="js/firebase.js"></script>
+        <script type="text/javascript" src="js/tools.js"></script>
+        <script type="text/javascript" src="js/google-signin.js"></script>
+        <script type="text/javascript" src="js/email-signin.js"></script>
+
+        <script type="text/javascript">
+
+            function setPoiApproved(key) {
+                console.log(key + " set for approval");
+
+                var postPoi;
+
+                firebase.database().ref('/poi/' + key).once('value').then(function(snapshot) {
+                        postPoi = snapshot.val();
+                        postPoi['approved'] = true;
+                        console.log(postPoi);
+
+                        var updates = {};
+                        updates['/poi/' + key] = postPoi;
+
+                        firebase.database().ref().update(updates);
+                });
+            }
+
+            function updateUnapprovedPoi(snapshotVal) {
+                var poiList = "";
+                console.log(snapshotVal);
+                for (var key in snapshotVal) {
+                    if (snapshotVal[key].approved === false) {
+                        poiList += "<div class=\"card\">";
+                        poiList += "<div class=\"card-image waves-effect waves-block waves-light\"><img class=\"activator\" alt='' src='" + snapshotVal[key].urlimage + "'></div>";
+                        poiList += "<div class=\"card-content\"><span class=\"card-title activator grey-text text-darken-4\">" + snapshotVal[key].name + "<i class=\"mdi-navigation-more-vert right\"></i></span>";
+                        poiList += "<p><a id='" + key + "' onClick='setPoiApproved(this.id)' name='approve'>Approve</a></p>"
+                        poiList += "</div>";
+                        poiList += "<div class=\"card-reveal\">";
+                        poiList += "<span class=\"card-title grey-text text-darken-4\">" + snapshotVal[key].name + "<i class=\"mdi-navigation-close right\"></i></span>";
+
+                        poiList += "<p>" + snapshotVal[key].userfriendlyaddress + "</p>";
+                        poiList += "<h3>QR code</h3><p><img src='https://api.qrserver.com/v1/create-qr-code/?data=" + snapshotVal[key].qrcode + "&amp;size=100x100' alt='' title='' /></p>";
+                        poiList += "<h3>Boost</h3>";
+                        poiList += "<p>" + snapshotVal[key].boost + "</p>";
+                        poiList += "<p><a id='" + key + "' onClick='setPoiApproved(this.id)' name='approve'>Approve</a></p>"
+                        poiList += "</div></div>";
+                        //document.getElementById('key').addEventListener('click', setPoiApproved(key), false);
+                    }
+                }
+                console.log(poiList);
+                document.getElementById("pois").innerHTML = poiList;
+            }
+
+            firebase.auth().onAuthStateChanged(function(user) {
+                if(user) {
+                    /*alert("User is logged in");
+                    alert(user.uid);*/
+                    //document.getElementById('quickstart-sign-in-status').textContent = 'Signed in';
+                    //document.getElementById('quickstart-account-details').textContent = JSON.stringify(user, null, '  ');
+
+                    if(user.providerData.providerId === "google.com") {
+                        document.getElementById('google-sign-in').addEventListener('click', toggleGoogleSignIn, false);
+                    } else {
+                        document.getElementById('email-sign-in').addEventListener('click', toggleEmailSignIn, false);
+                    }
+
+                    var poiRef = firebase.database().ref('poi');
+                    poiRef.on('value', function(snapshot) {
+                        updateUnapprovedPoi(snapshot.val());
+                    });
+
+                } else {
+                    //alert("User is NOT logged in");
+                    //document.getElementById('quickstart-sign-in-status').textContent = 'Signed out';
+                    //document.getElementById('quickstart-account-details').textContent = 'null';
+                    redirect(0);
+                }
+            });
+
+
+
+
+        </script>
+    </head>
+ <body id="mybackground">
+
+
+
+
+  <div id="login-page" class="row">
+
+    <div class="col s12 m6 l6 offset-m3 offset-l3 z-depth-4 card-panel">
+        <div class="row margin">
+          <div class="input-field col s12 center" >
+			<div class="row">
+
+
+
+
+			 <div class="input-field col s12">
+			         <h1>Moderators page</h1>
+        <p>From here you may approve newly added PoIs</p>
+        <a id="email-sign-in" class="btn waves-effect waves-light col s12" name="signin">Sign out</a><br/>
+
+				        <br/>
+        <div id="pois"></div>
+        <br/>
+        <button id="email-sign-in" name="signin">Sign out</button><br/>
+			</div>
+			</div>
+          </div>
+        </div>
+
+    </div>
+  </div>
+
+
+    </body>
+</html>

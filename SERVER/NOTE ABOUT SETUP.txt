@@ -1,0 +1,6 @@
+Web page setup for any web service.
+Place the content of this folder in /var/http/www
+
+rest folder contains a python web service for uploading images.
+Configured to listen on port 5000 at /upload endpoint for POST requests with the base64 of the image as the RAW body (no headers).
+The server returns a JSON with a URL of the image stored.

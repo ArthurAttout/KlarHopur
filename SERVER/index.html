@@ -1,0 +1,182 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Prom'</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+
+	<link rel="stylesheet" href="main.css">
+	<!-- CORE CSS-->
+
+  <link href="css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection">
+  <link href="css/style.min.css" type="text/css" rel="stylesheet" media="screen,projection">
+    <!-- Custome CSS-->
+    <link href="css/custom/custom.min.css" type="text/css" rel="stylesheet" media="screen,projection">
+  <link href="css/layouts/page-center.css" type="text/css" rel="stylesheet" media="screen,projection">
+
+  <!-- INCLUDED PLUGIN CSS ON THIS PAGE -->
+  <link href="js/plugins/prism/prism.css" type="text/css" rel="stylesheet" media="screen,projection">
+  <link href="js/plugins/perfect-scrollbar/perfect-scrollbar.css" type="text/css" rel="stylesheet" media="screen,projection">
+
+<script type="text/javascript" src="js/plugins/jquery-1.11.2.min.js"></script>
+
+	<script src="https://www.gstatic.com/firebasejs/5.5.1/firebase.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.5.1/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.5.1/firebase-auth.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.5.1/firebase-database.js"></script>
+	<script type="text/javascript" src="js/firebase.js"></script>
+	<script type="text/javascript" src="js/tools.js"></script>
+	<script type="text/javascript" src="js/google-signin.js"></script>
+	<script type="text/javascript" src="js/email-signin.js"></script>
+
+	<script type="text/javascript">
+	$(document).keypress(function(e) {
+	   //e.preventDefault();
+	   if (e.keyCode == 13) {
+			 console.error("TRIGGERED !!!!");
+	      document.getElementById("email-sign-in").click();
+	   }
+	});
+	</script>
+
+	<script type="text/javascript">
+
+		function continueMailToggle() {
+                document.getElementById("email").style.display = "block";
+				document.getElementById("password").style.display = "block";
+				document.getElementById("email-sign-in").style.display = "block";
+				document.getElementById('email-sign-up').style.display = "block";
+            }
+
+		function initApp() {
+		// Listening for auth state changes.
+		// [START authstatelistener]
+		firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION).then(function() {
+				firebase.auth().onAuthStateChanged(function(user) {
+					if (user) {
+					// User is signed in.
+					var displayName = user.displayName;
+					var email = user.email;
+					var emailVerified = user.emailVerified;
+					var photoURL = user.photoURL;
+					var isAnonymous = user.isAnonymous;
+					var uid = user.uid;
+					var providerData = user.providerData;
+					// [START_EXCLUDE]
+					document.getElementById('google-sign-in').textContent = 'Sign out';
+					document.getElementById('email-sign-in').textContent = 'Sign out';
+					document.getElementById('email-sign-up').disabled = true;
+					//document.getElementById('quickstart-sign-in-status').textContent = 'Signed in';
+					//document.getElementById('quickstart-account-details').textContent = JSON.stringify(user, null, '  ');
+					// [END_EXCLUDE]
+
+					// Check user status
+					/*firebase.database().ref('/users/' + uid).once('value').then(function(snapshot) {
+						document.getElementById('database-email').textContent = (snapshot.val() && snapshot.val().email) || 'Anonymous';
+						document.getElementById('database-username').textContent = (snapshot.val() && snapshot.val().username) || 'Anonymous';
+						document.getElementById('database-role').textContent = (snapshot.val() && snapshot.val().role) || 'Anonymous';
+					});*/
+
+					} else {
+					// User is signed out.
+					// [START_EXCLUDE]
+					//document.getElementById('quickstart-sign-in-status').textContent = 'Signed out';
+					//document.getElementById('quickstart-account-details').textContent = 'null';
+					//document.getElementById('quickstart-oauthtoken').textContent = 'null';
+					document.getElementById('email-sign-up').disabled = false;
+					document.getElementById('google-sign-in').textContent = 'Sign in with Google';
+					document.getElementById('email-sign-in').textContent = 'Sign in';
+					// [END_EXCLUDE]
+					}
+					// [START_EXCLUDE]
+
+					// [END_EXCLUDE]
+					});
+					// [END authstatelistener]
+				});
+
+				document.getElementById('google-sign-in').addEventListener('click', toggleGoogleSignIn, false);
+				document.getElementById('email-sign-in').addEventListener('click', toggleEmailSignIn, false);
+				document.getElementById('email-sign-up').addEventListener('click', handleEmailSignUp, false);
+				document.getElementById('continue-mail').addEventListener('click', continueMailToggle, false);
+
+
+
+				//document.getElementById('database-email').textContent = 'null';
+				//document.getElementById('database-username').textContent = 'null';
+				//document.getElementById('database-role').textContent = 'null';
+			}
+
+		window.onload = function() {
+			document.getElementById("email").style.display = "none";
+			document.getElementById("password").style.display = "none";
+			document.getElementById("email-sign-in").style.display = "none";
+			document.getElementById('email-sign-up').style.display = "none";
+			initApp();
+		};
+	</script>
+</head>
+	<body id="mybackground">
+		<!-- <h1>Prom'</h1> -->
+		<!--<div>
+			<button id="google-sign-in">Continue with Google</button><br/>
+			<button id="continue-mail">Continue with email</button><br/>
+			<div>
+				<input style="display:inline;width:auto;" type="text" id="email" name="email" placeholder="Email"/>
+				&nbsp;&nbsp;&nbsp;
+				<input style="display:inline;width:auto;" type="password" id="password" name="password" placeholder="Password"/><br/>
+				<button id="email-sign-in" name="signin">Sign in</button><br/>
+				<button disabled id="email-sign-up" name="signup">Sign up</button><br/>
+			</div>
+		</div>-->
+
+  <div id="login-page" class="row">
+    <div class="col s12 m6 l6 offset-m3 offset-l3 z-depth-4 card-panel">
+			<div class="row center">
+            <img src="https://prom.longree.be/img/logo_rectangle_transparent.png" alt="" class="responsive-img valign">
+            <p class="center login-form-text">L'application de promenade pour votre SmartCity !</p>
+          </div>
+					<div class="row center">
+
+			<a class="waves-effect waves-light btn" id="google-sign-in">Continue with Google</a>
+		</div>
+		<div class="row center">
+			<a class="waves-effect waves-light btn" id="continue-mail"><i class="mdi-content-mail left"></i>Continue with email</a>
+		</div>
+			<div class="input-field col s12">
+				<input style="display:inline;width:100%;" type="text" id="email" name="email" placeholder="Email"/>
+				&nbsp;&nbsp;&nbsp;
+				<input style="display:inline;width:100%;" type="password" id="password" name="password" placeholder="Password"/><br/>
+				<button id="email-sign-in" name="signin" class="btn waves-effect waves-light col s12">Sign in</button><br/>
+				<br/>
+				<button disabled id="email-sign-up" name="signup" class="btn waves-effect waves-light col s12" style="margin-bottom:20px;">Sign up</button><br/>
+			</div>
+			</div>
+          </div>
+        </div>
+        <!--<div class="row">
+          <div class="input-field col s12">
+            <a href="index.html" class="btn waves-effect waves-light col s12">Login</a>
+          </div>
+        </div>-->
+    </div>
+  </div>
+
+
+
+		<br/><br/>
+		<!--
+		<div class="quickstart-user-details-container">
+				Firebase sign-in status: <span id="quickstart-sign-in-status">Unknown</span>
+				<div>Firebase auth <code>currentUser</code> object value:</div>
+				<pre><code id="quickstart-account-details">null</code></pre>
+				<div>Google OAuth Access Token:</div>
+				<pre><code id="quickstart-oauthtoken">null</code></pre>
+
+				<div>Firebase database data</div>
+				<pre><code id="database-email">null</code></pre>
+				<pre><code id="database-username">null</code></pre>
+				<pre><code id="database-role">null</code></pre>
+		</div>
+		-->
+	</body>
+</html>

@@ -1,0 +1,27 @@
+h1 {
+    text-align: center;
+}
+
+.button {
+
+	background-image: url("img/ButtonGoogle.png");
+	background-repeat:no-repeat;
+
+}
+
+#mybackground {
+	background: url("https://prom.longree.be/img/back_pres.png") !important;
+
+}
+
+.logo {
+	background: url("LogoBig.png");
+	background-repeat:no-repeat;
+}
+.imageGauche
+{
+	align-content: center;
+}
+.none{
+  display:none !important;
+}
